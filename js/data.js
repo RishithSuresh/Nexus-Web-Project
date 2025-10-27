@@ -174,7 +174,8 @@ const SAMPLE_CLUBS = [
         members: 150,
         meetingTime: 'Fridays, 4:00 PM',
         location: 'Computer Lab, Building B',
-        image: 'https://via.placeholder.com/300x200/6B9BD1/FFFFFF?text=Coding+Club'
+        image: 'https://via.placeholder.com/300x200/6B9BD1/FFFFFF?text=Coding+Club',
+        organizedEvents: ['evt001', 'evt003']  // Tech Summit, Startup Pitch
     },
     {
         id: 'club002',
@@ -190,7 +191,8 @@ const SAMPLE_CLUBS = [
         members: 80,
         meetingTime: 'Tuesdays & Thursdays, 5:30 PM',
         location: 'Theater Hall',
-        image: 'https://via.placeholder.com/300x200/9B7EBD/FFFFFF?text=Drama+Society'
+        image: 'https://via.placeholder.com/300x200/9B7EBD/FFFFFF?text=Drama+Society',
+        organizedEvents: ['evt002']  // Annual Cultural Fest
     },
     {
         id: 'club003',
@@ -206,7 +208,8 @@ const SAMPLE_CLUBS = [
         members: 120,
         meetingTime: 'Wednesdays, 6:00 PM',
         location: 'Innovation Hub',
-        image: 'https://via.placeholder.com/300x200/F4A6A3/FFFFFF?text=E-Cell'
+        image: 'https://via.placeholder.com/300x200/F4A6A3/FFFFFF?text=E-Cell',
+        organizedEvents: ['evt003', 'evt004']  // Startup Pitch, Environmental Workshop
     }
 ];
 

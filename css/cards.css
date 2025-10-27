@@ -391,3 +391,59 @@
     color: var(--text-secondary);
 }
 
+/* Organized Events in Club Modal */
+.organized-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.organized-event-item {
+    background: linear-gradient(135deg, #F5F7FA 0%, #E8F4F8 100%);
+    border-left: 4px solid var(--primary-color);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.organized-event-item:hover {
+    background: linear-gradient(135deg, #E8F4F8 0%, #E0F2F7 100%);
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(107, 155, 209, 0.15);
+}
+
+.organized-event-item .event-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.organized-event-item .event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.organized-event-item .event-date,
+.organized-event-item .event-time {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.organized-event-item .badge {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    border-radius: 12px;
+}
+
+.no-events {
+    color: var(--text-light);
+    font-style: italic;
+    text-align: center;
+    padding: var(--spacing-md);
+}
+
