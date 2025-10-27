@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Connect - Your College Hub</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <link rel="stylesheet" href="css/cards.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="logo-container">
+            <svg id="animated-logo" class="logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Campus Connect Logo -->
+                <defs>
+                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#6B9BD1;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#9B7EBD;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <!-- Building/Campus Icon -->
+                <rect x="60" y="80" width="80" height="90" fill="url(#logoGradient)" rx="4" class="logo-building"/>
+                
+                <!-- Windows -->
+                <rect x="70" y="90" width="15" height="15" fill="#fff" opacity="0.9" class="logo-window window-1"/>
+                <rect x="92.5" y="90" width="15" height="15" fill="#fff" opacity="0.9" class="logo-window window-2"/>
+                <rect x="115" y="90" width="15" height="15" fill="#fff" opacity="0.9" class="logo-window window-3"/>
+                
+                <rect x="70" y="115" width="15" height="15" fill="#fff" opacity="0.9" class="logo-window window-4"/>
+                <rect x="92.5" y="115" width="15" height="15" fill="#fff" opacity="0.9" class="logo-window window-5"/>
+                <rect x="115" y="115" width="15" height="15" fill="#fff" opacity="0.9" class="logo-window window-6"/>
+                
+                <rect x="70" y="140" width="15" height="15" fill="#fff" opacity="0.9" class="logo-window window-7"/>
+                <rect x="92.5" y="140" width="15" height="15" fill="#fff" opacity="0.9" class="logo-window window-8"/>
+                <rect x="115" y="140" width="15" height="15" fill="#fff" opacity="0.9" class="logo-window window-9"/>
+                
+                <!-- Door -->
+                <rect x="85" y="155" width="30" height="15" fill="#fff" opacity="0.9" rx="2"/>
+                
+                <!-- Connection circles (representing "Connect") -->
+                <circle cx="40" cy="100" r="8" fill="#6B9BD1" class="connect-circle circle-1"/>
+                <circle cx="160" cy="100" r="8" fill="#9B7EBD" class="connect-circle circle-2"/>
+                <circle cx="100" y="40" r="8" fill="#8AB4D5" class="connect-circle circle-3"/>
+                
+                <!-- Connection lines -->
+                <line x1="48" y1="100" x2="60" y2="100" stroke="#6B9BD1" stroke-width="2" class="connect-line line-1"/>
+                <line x1="140" y1="100" x2="152" y2="100" stroke="#9B7EBD" stroke-width="2" class="connect-line line-2"/>
+                <line x1="100" y1="48" x2="100" y2="80" stroke="#8AB4D5" stroke-width="2" class="connect-line line-3"/>
+            </svg>
+            <div class="loading-text">Campus Connect</div>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content hidden">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <svg class="logo-small" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="logoGradientNav" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#6B9BD1;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#9B7EBD;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect x="60" y="80" width="80" height="90" fill="url(#logoGradientNav)" rx="4"/>
+                        <rect x="70" y="90" width="15" height="15" fill="#fff" opacity="0.9"/>
+                        <rect x="92.5" y="90" width="15" height="15" fill="#fff" opacity="0.9"/>
+                        <rect x="115" y="90" width="15" height="15" fill="#fff" opacity="0.9"/>
+                        <rect x="85" y="155" width="30" height="15" fill="#fff" opacity="0.9" rx="2"/>
+                        <circle cx="40" cy="100" r="8" fill="#6B9BD1"/>
+                        <circle cx="160" cy="100" r="8" fill="#9B7EBD"/>
+                        <circle cx="100" cy="40" r="8" fill="#8AB4D5"/>
+                    </svg>
+                    <span class="logo-text">Campus Connect</span>
+                </div>
+                <button class="nav-toggle" id="navToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="index.html" class="nav-link active">Home</a></li>
+                    <li><a href="pages/events.html" class="nav-link">Events</a></li>
+                    <li><a href="pages/news.html" class="nav-link">News</a></li>
+                    <li><a href="pages/clubs.html" class="nav-link">Clubs</a></li>
+                    <li><a href="pages/login.html" class="nav-link login-btn" id="authButton">Login</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Welcome to Campus Connect</h1>
+                <p class="hero-tagline">Your Gateway to Campus Life & Opportunities</p>
+                <p class="hero-location">📍 Silicon Valley University, California</p>
+                <div class="hero-buttons">
+                    <a href="pages/events.html" class="btn btn-primary">Explore Events</a>
+                    <a href="pages/clubs.html" class="btn btn-secondary">Join Clubs</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Links Section -->
+        <section class="quick-links">
+            <div class="container">
+                <h2 class="section-title">Quick Access</h2>
+                <div class="links-grid">
+                    <a href="pages/events.html" class="link-card">
+                        <div class="link-icon">📅</div>
+                        <h3>Events</h3>
+                        <p>Discover upcoming campus events</p>
+                    </a>
+                    <a href="pages/news.html" class="link-card">
+                        <div class="link-icon">📰</div>
+                        <h3>News</h3>
+                        <p>Stay updated with latest news</p>
+                    </a>
+                    <a href="pages/clubs.html" class="link-card">
+                        <div class="link-icon">🎯</div>
+                        <h3>Clubs</h3>
+                        <p>Connect with student clubs</p>
+                    </a>
+                    <a href="pages/login.html" class="link-card">
+                        <div class="link-icon">👤</div>
+                        <h3>Dashboard</h3>
+                        <p>Manage your profile</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upcoming Events Section -->
+        <section class="home-events">
+            <div class="container">
+                <h2 class="section-title">Upcoming Events</h2>
+                <div class="events-grid" id="homeEventsGrid">
+                    <!-- Events will be loaded dynamically -->
+                </div>
+                <div class="section-footer">
+                    <a href="pages/events.html" class="btn btn-outline">View All Events →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest News Section -->
+        <section class="home-news">
+            <div class="container">
+                <h2 class="section-title">Latest News</h2>
+                <div class="news-grid" id="homeNewsGrid">
+                    <!-- News will be loaded dynamically -->
+                </div>
+                <div class="section-footer">
+                    <a href="pages/news.html" class="btn btn-outline">Read More News →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>Campus Connect</h3>
+                        <p>Connecting students, events, and opportunities across campus.</p>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="pages/events.html">Events</a></li>
+                            <li><a href="pages/news.html">News</a></li>
+                            <li><a href="pages/clubs.html">Clubs</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Contact</h3>
+                        <p>Email: info@campusconnect.edu</p>
+                        <p>Phone: (555) 123-4567</p>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2024 Campus Connect. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/home.js"></script>
+
+    <!-- Loading Screen Handler -->
+    <script>
+        // Show main content after loading screen
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const loadingScreen = document.getElementById('loading-screen');
+                const mainContent = document.getElementById('main-content');
+
+                // Hide loading screen
+                if (loadingScreen) {
+                    loadingScreen.style.display = 'none';
+                }
+
+                // Show main content
+                if (mainContent) {
+                    mainContent.classList.remove('hidden');
+                }
+            }, 3000); // 3 seconds to show loading animation
+        });
+    </script>
+</body>
+</html>
+

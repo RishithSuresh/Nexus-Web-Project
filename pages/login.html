@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Campus Connect</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <svg class="logo-small" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradientNav" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6B9BD1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#9B7EBD;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <rect x="60" y="80" width="80" height="90" fill="url(#logoGradientNav)" rx="4"/>
+                    <rect x="70" y="90" width="15" height="15" fill="#fff" opacity="0.9"/>
+                    <rect x="92.5" y="90" width="15" height="15" fill="#fff" opacity="0.9"/>
+                    <rect x="115" y="90" width="15" height="15" fill="#fff" opacity="0.9"/>
+                    <rect x="85" y="155" width="30" height="15" fill="#fff" opacity="0.9" rx="2"/>
+                    <circle cx="40" cy="100" r="8" fill="#6B9BD1"/>
+                    <circle cx="160" cy="100" r="8" fill="#9B7EBD"/>
+                    <circle cx="100" cy="40" r="8" fill="#8AB4D5"/>
+                </svg>
+                <span class="logo-text">Campus Connect</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="events.html" class="nav-link">Events</a></li>
+                <li><a href="news.html" class="nav-link">News</a></li>
+                <li><a href="clubs.html" class="nav-link">Clubs</a></li>
+                <li><a href="login.html" class="nav-link active login-btn">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login Container -->
+    <section class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>Welcome Back!</h1>
+                <p>Login to access your dashboard</p>
+            </div>
+
+            <!-- Role Selector -->
+            <div class="role-selector">
+                <div class="role-option active" data-role="student">
+                    <div class="role-icon">🎓</div>
+                    <div class="role-name">Student</div>
+                </div>
+                <div class="role-option" data-role="organizer">
+                    <div class="role-icon">👨‍💼</div>
+                    <div class="role-name">Organizer</div>
+                </div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" class="form-input" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                </div>
+
+                <div id="errorMessage" class="form-error" style="display: none;"></div>
+            </form>
+
+            <!-- Demo Credentials -->
+            <div class="demo-credentials">
+                <h4>Demo Credentials</h4>
+                <p><strong>Student:</strong> username: <code>student</code> | password: <code>student123</code></p>
+                <p><strong>Organizer:</strong> username: <code>organizer</code> | password: <code>organizer123</code></p>
+                <p><strong>Organizer 2:</strong> username: <code>organizer2</code> | password: <code>organizer123</code></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Campus Connect</h3>
+                    <p>Connecting students, events, and opportunities across campus.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="news.html">News</a></li>
+                        <li><a href="clubs.html">Clubs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Email: info@campusconnect.edu</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Campus Connect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/login.js"></script>
+</body>
+</html>
+
