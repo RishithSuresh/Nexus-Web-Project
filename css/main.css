@@ -5,26 +5,26 @@
 
 /* CSS Variables for Easy Theming */
 :root {
-    /* Color Palette - Light & Soft */
-    --primary-color: #6B9BD1;
-    --primary-light: #8AB4D5;
-    --primary-dark: #5A8AC0;
-    --secondary-color: #9B7EBD;
-    --secondary-light: #B399CC;
-    --accent-color: #F4A6A3;
-    --accent-light: #F9C5C3;
-    
+    /* Color Palette - Bright & Striking */
+    --primary-color: #FF6B35;
+    --primary-light: #FF8C5A;
+    --primary-dark: #E55A2B;
+    --secondary-color: #00A8E8;
+    --secondary-light: #00D4FF;
+    --accent-color: #FFD60A;
+    --accent-light: #FFE66D;
+
     /* Neutral Colors */
-    --bg-color: #FAFBFC;
-    --bg-secondary: #F5F7FA;
+    --bg-color: #F8F9FA;
+    --bg-secondary: #F0F3F7;
     --bg-card: #FFFFFF;
-    --text-primary: #2C3E50;
-    --text-secondary: #5A6C7D;
-    --text-light: #8B9AA8;
-    --border-color: #E1E8ED;
-    --shadow-sm: 0 2px 8px rgba(107, 155, 209, 0.08);
-    --shadow-md: 0 4px 16px rgba(107, 155, 209, 0.12);
-    --shadow-lg: 0 8px 24px rgba(107, 155, 209, 0.16);
+    --text-primary: #1A1A1A;
+    --text-secondary: #4A4A4A;
+    --text-light: #7A7A7A;
+    --border-color: #E0E0E0;
+    --shadow-sm: 0 2px 8px rgba(255, 107, 53, 0.08);
+    --shadow-md: 0 4px 16px rgba(255, 107, 53, 0.12);
+    --shadow-lg: 0 8px 24px rgba(255, 107, 53, 0.16);
     
     /* Typography */
     --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
