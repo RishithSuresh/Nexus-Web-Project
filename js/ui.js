@@ -3,6 +3,47 @@
    Reusable UI components and helper functions
    =================================== */
 
+// Loading state management
+function showLoadingState(element, message = 'Loading...') {
+    if (!element) return;
+    element.innerHTML = `
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>${message}</p>
+        </div>
+    `;
+}
+
+function hideLoadingState(element) {
+    if (!element) return;
+    const loadingState = element.querySelector('.loading-state');
+    if (loadingState) {
+        loadingState.remove();
+    }
+}
+
+// Show error message
+function showErrorMessage(element, message = 'An error occurred') {
+    if (!element) return;
+    element.innerHTML = `
+        <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <p>${message}</p>
+        </div>
+    `;
+}
+
+// Show empty state
+function showEmptyState(element, message = 'No items found', icon = '📭') {
+    if (!element) return;
+    element.innerHTML = `
+        <div class="empty-state">
+            <div class="empty-icon">${icon}</div>
+            <p>${message}</p>
+        </div>
+    `;
+}
+
 // Format date to readable string
 function formatDate(dateString) {
     const date = new Date(dateString);

@@ -432,6 +432,210 @@ class Database {
         
         return true;
     }
+
+    // Analytics Methods
+    getEventAnalytics(eventId) {
+        const event = this.getEventById(eventId);
+        if (!event) return null;
+
+        const registrationRate = (event.registrations.length / event.maxCapacity) * 100;
+        const spotsLeft = event.maxCapacity - event.registrations.length;
+
+        return {
+            eventId: event.id,
+            title: event.title,
+            totalRegistrations: event.registrations.length,
+            maxCapacity: event.maxCapacity,
+            spotsLeft: spotsLeft,
+            registrationRate: Math.round(registrationRate),
+            isFull: spotsLeft <= 0,
+            status: event.status,
+            date: event.date,
+            category: event.category
+        };
+    }
+
+    // Get all events analytics for organizer
+    getOrganizerAnalytics(organizerId) {
+        const events = this.getEvents();
+        const organizerEvents = events.filter(e => e.organizer === organizerId);
+
+        const totalEvents = organizerEvents.length;
+        const totalRegistrations = organizerEvents.reduce((sum, e) => sum + e.registrations.length, 0);
+        const totalCapacity = organizerEvents.reduce((sum, e) => sum + e.maxCapacity, 0);
+        const avgRegistrationRate = totalCapacity > 0 ? Math.round((totalRegistrations / totalCapacity) * 100) : 0;
+
+        const eventsByStatus = {
+            upcoming: organizerEvents.filter(e => e.status === 'upcoming').length,
+            ongoing: organizerEvents.filter(e => e.status === 'ongoing').length,
+            completed: organizerEvents.filter(e => e.status === 'completed').length
+        };
+
+        const eventsByCategory = {};
+        organizerEvents.forEach(e => {
+            eventsByCategory[e.category] = (eventsByCategory[e.category] || 0) + 1;
+        });
+
+        return {
+            totalEvents,
+            totalRegistrations,
+            totalCapacity,
+            avgRegistrationRate,
+            eventsByStatus,
+            eventsByCategory,
+            events: organizerEvents.map(e => this.getEventAnalytics(e.id))
+        };
+    }
+
+    // Get student engagement metrics
+    getStudentMetrics(studentId) {
+        const user = this.getUserById(studentId);
+        if (!user || user.role !== 'student') return null;
+
+        const registeredEvents = (user.registeredEvents || [])
+            .map(id => this.getEventById(id))
+            .filter(e => e !== undefined);
+
+        const eventsByCategory = {};
+        registeredEvents.forEach(e => {
+            eventsByCategory[e.category] = (eventsByCategory[e.category] || 0) + 1;
+        });
+
+        return {
+            totalRegistrations: registeredEvents.length,
+            eventsByCategory,
+            upcomingEvents: registeredEvents.filter(e => e.status === 'upcoming').length,
+            ongoingEvents: registeredEvents.filter(e => e.status === 'ongoing').length,
+            completedEvents: registeredEvents.filter(e => e.status === 'completed').length,
+            registeredEvents: registeredEvents
+        };
+    }
+
+    // Get platform-wide statistics
+    getPlatformStats() {
+        const events = this.getEvents();
+        const users = this.getUsers();
+        const clubs = this.getClubs();
+
+        const totalRegistrations = events.reduce((sum, e) => sum + e.registrations.length, 0);
+        const totalCapacity = events.reduce((sum, e) => sum + e.maxCapacity, 0);
+
+        const students = users.filter(u => u.role === 'student').length;
+        const organizers = users.filter(u => u.role === 'organizer').length;
+
+        return {
+            totalEvents: events.length,
+            totalClubs: clubs.length,
+            totalUsers: users.length,
+            totalStudents: students,
+            totalOrganizers: organizers,
+            totalRegistrations,
+            totalCapacity,
+            averageRegistrationRate: totalCapacity > 0 ? Math.round((totalRegistrations / totalCapacity) * 100) : 0,
+            eventsByStatus: {
+                upcoming: events.filter(e => e.status === 'upcoming').length,
+                ongoing: events.filter(e => e.status === 'ongoing').length,
+                completed: events.filter(e => e.status === 'completed').length
+            },
+            eventsByCategory: this._groupBy(events, 'category')
+        };
+    }
+
+    // Helper method to group by property
+    _groupBy(array, property) {
+        return array.reduce((acc, obj) => {
+            acc[obj[property]] = (acc[obj[property]] || 0) + 1;
+            return acc;
+        }, {});
+    }
+
+    // Favorites/Wishlist Methods
+    addToFavorites(userId, eventId) {
+        const user = this.getUserById(userId);
+        if (!user) return false;
+
+        if (!user.favoriteEvents) user.favoriteEvents = [];
+        if (!user.favoriteEvents.includes(eventId)) {
+            user.favoriteEvents.push(eventId);
+            this.updateUser(userId, user);
+            return true;
+        }
+        return false;
+    }
+
+    removeFromFavorites(userId, eventId) {
+        const user = this.getUserById(userId);
+        if (!user) return false;
+
+        if (user.favoriteEvents) {
+            user.favoriteEvents = user.favoriteEvents.filter(id => id !== eventId);
+            this.updateUser(userId, user);
+            return true;
+        }
+        return false;
+    }
+
+    isFavorite(userId, eventId) {
+        const user = this.getUserById(userId);
+        if (!user || !user.favoriteEvents) return false;
+        return user.favoriteEvents.includes(eventId);
+    }
+
+    getFavoriteEvents(userId) {
+        const user = this.getUserById(userId);
+        if (!user || !user.favoriteEvents) return [];
+
+        return user.favoriteEvents
+            .map(id => this.getEventById(id))
+            .filter(e => e !== undefined);
+    }
+
+    // Event Ratings & Reviews
+    addEventReview(userId, eventId, rating, review) {
+        const event = this.getEventById(eventId);
+        if (!event) return false;
+
+        if (!event.reviews) event.reviews = [];
+
+        // Check if user already reviewed
+        const existingReview = event.reviews.find(r => r.userId === userId);
+        if (existingReview) {
+            existingReview.rating = rating;
+            existingReview.review = review;
+            existingReview.date = new Date().toISOString();
+        } else {
+            event.reviews.push({
+                userId,
+                rating,
+                review,
+                date: new Date().toISOString()
+            });
+        }
+
+        this.updateEvent(eventId, event);
+        return true;
+    }
+
+    getEventReviews(eventId) {
+        const event = this.getEventById(eventId);
+        if (!event || !event.reviews) return [];
+
+        return event.reviews.map(review => {
+            const user = this.getUserById(review.userId);
+            return {
+                ...review,
+                userName: user ? user.profile.name : 'Anonymous'
+            };
+        });
+    }
+
+    getEventAverageRating(eventId) {
+        const reviews = this.getEventReviews(eventId);
+        if (reviews.length === 0) return 0;
+
+        const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+        return Math.round((sum / reviews.length) * 10) / 10;
+    }
 }
 
 // Initialize global database instance

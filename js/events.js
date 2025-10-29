@@ -48,6 +48,9 @@ function setupEventListeners() {
     const searchInput = document.getElementById('searchInput');
     const categoryFilter = document.getElementById('categoryFilter');
     const statusFilter = document.getElementById('statusFilter');
+    const dateFromFilter = document.getElementById('dateFromFilter');
+    const dateToFilter = document.getElementById('dateToFilter');
+    const capacityFilter = document.getElementById('capacityFilter');
     
     if (searchInput) {
         searchInput.addEventListener('input', applyFilters);
@@ -60,6 +63,18 @@ function setupEventListeners() {
     if (statusFilter) {
         statusFilter.addEventListener('change', applyFilters);
     }
+
+    if (dateFromFilter) {
+        dateFromFilter.addEventListener('change', applyFilters);
+    }
+
+    if (dateToFilter) {
+        dateToFilter.addEventListener('change', applyFilters);
+    }
+
+    if (capacityFilter) {
+        capacityFilter.addEventListener('change', applyFilters);
+    }
 }
 
 // Apply all filters
@@ -67,17 +82,34 @@ function applyFilters() {
     const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
     const category = document.getElementById('categoryFilter')?.value || 'all';
     const status = document.getElementById('statusFilter')?.value || 'all';
-    
+    const dateFrom = document.getElementById('dateFromFilter')?.value || '';
+    const dateTo = document.getElementById('dateToFilter')?.value || '';
+    const capacity = document.getElementById('capacityFilter')?.value || 'all';
+
     filteredEvents = allEvents.filter(event => {
-        const matchesSearch = !searchTerm || 
+        const matchesSearch = !searchTerm ||
             event.title.toLowerCase().includes(searchTerm) ||
             event.description.toLowerCase().includes(searchTerm) ||
             event.location.toLowerCase().includes(searchTerm);
-        
+
         const matchesCategory = category === 'all' || event.category === category;
         const matchesStatus = status === 'all' || event.status === status;
-        
-        return matchesSearch && matchesCategory && matchesStatus;
+
+        // Date range filter
+        const eventDate = new Date(event.date);
+        const matchesDateFrom = !dateFrom || eventDate >= new Date(dateFrom);
+        const matchesDateTo = !dateTo || eventDate <= new Date(dateTo);
+
+        // Capacity filter
+        const spotsLeft = event.maxCapacity - event.registrations.length;
+        let matchesCapacity = true;
+        if (capacity === 'available') {
+            matchesCapacity = spotsLeft > 0;
+        } else if (capacity === 'full') {
+            matchesCapacity = spotsLeft === 0;
+        }
+
+        return matchesSearch && matchesCategory && matchesStatus && matchesDateFrom && matchesDateTo && matchesCapacity;
     });
     
     displayEvents();
@@ -97,7 +129,10 @@ function showEventDetails(eventId) {
     const isOwnEvent = isOrganizer && userData?.createdEvents?.includes(eventId);
     const isFull = event.registrations.length >= event.maxCapacity;
     const spotsLeft = event.maxCapacity - event.registrations.length;
-    
+    const isFavorite = isStudent && db.isFavorite(userData?.id, eventId);
+    const avgRating = db.getEventAverageRating(eventId);
+    const reviews = db.getEventReviews(eventId);
+
     let actionButtons = '';
     
     if (!isLoggedIn) {
@@ -106,19 +141,26 @@ function showEventDetails(eventId) {
             <button class="btn btn-outline" onclick="closeModal()">Close</button>
         `;
     } else if (isStudent) {
+        const favoriteBtn = `<button class="btn btn-outline" onclick="toggleFavorite('${eventId}')" title="Add to favorites">
+            ${isFavorite ? '❤️ Favorited' : '🤍 Add to Favorites'}
+        </button>`;
+
         if (isRegistered) {
             actionButtons = `
                 <button class="btn btn-danger" onclick="unregisterFromEvent('${eventId}')">Unregister</button>
+                ${favoriteBtn}
                 <button class="btn btn-outline" onclick="closeModal()">Close</button>
             `;
         } else if (isFull) {
             actionButtons = `
                 <button class="btn btn-secondary" disabled>Event Full</button>
+                ${favoriteBtn}
                 <button class="btn btn-outline" onclick="closeModal()">Close</button>
             `;
         } else {
             actionButtons = `
                 <button class="btn btn-primary" onclick="registerForEvent('${eventId}')">Register Now</button>
+                ${favoriteBtn}
                 <button class="btn btn-outline" onclick="closeModal()">Close</button>
             `;
         }
@@ -190,10 +232,37 @@ function showEventDetails(eventId) {
                         ${event.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                     </div>
                 ` : ''}
+
+                ${avgRating > 0 ? `
+                    <div class="event-rating-section">
+                        <h3>⭐ Event Rating</h3>
+                        <div class="rating-display">
+                            <span class="rating-value">${avgRating}</span>
+                            <span class="rating-count">(${reviews.length} reviews)</span>
+                        </div>
+                    </div>
+                ` : ''}
+
+                ${reviews.length > 0 ? `
+                    <div class="event-reviews-section">
+                        <h3>📝 Reviews</h3>
+                        <div class="reviews-list">
+                            ${reviews.slice(0, 3).map(review => `
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <strong>${review.userName}</strong>
+                                        <span class="review-rating">${'⭐'.repeat(review.rating)}</span>
+                                    </div>
+                                    <p class="review-text">${review.review}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
             </div>
         </div>
     `;
-    
+
     showModal(event.title, content, []);
     
     // Add action buttons to modal footer
@@ -209,11 +278,17 @@ function registerForEvent(eventId) {
         showToast('Please login as a student to register', 'error');
         return;
     }
-    
+
     const success = db.registerForEvent(auth.currentUser.id, eventId);
-    
+
     if (success) {
         showToast('Successfully registered for event!', 'success');
+
+        // Send notification
+        if (typeof notifyEventRegistration === 'function') {
+            notifyEventRegistration(auth.currentUser.id, eventId);
+        }
+
         closeModal();
         loadEvents(); // Refresh events display
     } else {
@@ -281,11 +356,34 @@ function viewRegistrations(eventId) {
 function checkForEventParam() {
     const urlParams = new URLSearchParams(window.location.search);
     const eventId = urlParams.get('event');
-    
+
     if (eventId) {
         setTimeout(() => {
             showEventDetails(eventId);
         }, 100);
     }
+}
+
+// Toggle favorite event
+function toggleFavorite(eventId) {
+    if (!auth.isLoggedIn() || !auth.isStudent()) {
+        showToast('Please login as a student to add favorites', 'error');
+        return;
+    }
+
+    const user = auth.getUserData();
+    const isFavorite = db.isFavorite(user.id, eventId);
+
+    if (isFavorite) {
+        db.removeFromFavorites(user.id, eventId);
+        showToast('Removed from favorites', 'success');
+    } else {
+        db.addToFavorites(user.id, eventId);
+        showToast('Added to favorites', 'success');
+    }
+
+    // Refresh the modal
+    closeModal();
+    setTimeout(() => showEventDetails(eventId), 100);
 }
 

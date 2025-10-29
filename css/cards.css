@@ -22,6 +22,25 @@
     border-color: var(--primary-light);
 }
 
+.recommended-event {
+    border: 2px solid var(--accent-color);
+    position: relative;
+}
+
+.recommended-event::before {
+    content: '✨ Recommended';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--accent-color);
+    color: var(--text-primary);
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 10;
+}
+
 .event-image {
     height: 200px;
     background-size: cover;
@@ -410,6 +429,82 @@
     background: linear-gradient(135deg, #FFE6D5 0%, #D5F0FF 100%);
     transform: translateX(4px);
     box-shadow: 0 2px 8px rgba(255, 107, 53, 0.15);
+}
+
+/* Event Rating & Reviews */
+.event-rating-section {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, #FFF9F0 0%, #F0F9FF 100%);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--accent-color);
+}
+
+.event-rating-section h3 {
+    margin-top: 0;
+    color: var(--text-primary);
+}
+
+.rating-display {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.rating-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.rating-count {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.event-reviews-section {
+    margin-top: var(--spacing-lg);
+}
+
+.event-reviews-section h3 {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.review-item {
+    background: var(--bg-secondary);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--primary-color);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.review-header strong {
+    color: var(--text-primary);
+}
+
+.review-rating {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+}
+
+.review-text {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
 .organized-event-item .event-title {

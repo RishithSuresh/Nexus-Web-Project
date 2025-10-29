@@ -9,6 +9,7 @@ window.addEventListener('load', () => {
     setTimeout(() => {
         loadHomeEvents();
         loadHomeNews();
+        loadRecommendedEvents();
     }, 3100);
 });
 
@@ -61,6 +62,40 @@ function loadHomeNews() {
         card.addEventListener('click', () => {
             const newsId = card.dataset.newsId;
             window.location.href = `pages/news.html?news=${newsId}`;
+        });
+    });
+}
+
+// Load recommended events for logged-in students
+function loadRecommendedEvents() {
+    const recommendedGrid = document.getElementById('recommendedEventsGrid');
+    if (!recommendedGrid) return;
+
+    // Only show recommendations for logged-in students
+    if (!auth.isLoggedIn() || !auth.isStudent()) {
+        recommendedGrid.parentElement.style.display = 'none';
+        return;
+    }
+
+    const user = auth.getUserData();
+    const recommendations = features.getEventRecommendations(user.id, 3);
+
+    if (recommendations.length === 0) {
+        showEmptyState(recommendedGrid, 'No recommendations available', '✨');
+        return;
+    }
+
+    recommendedGrid.innerHTML = recommendations.map(event => {
+        const card = createEventCard(event);
+        // Add a recommendation badge
+        return card.replace('<div class="event-card"', '<div class="event-card recommended-event"');
+    }).join('');
+
+    // Add click handlers
+    recommendedGrid.querySelectorAll('.event-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const eventId = card.dataset.eventId;
+            window.location.href = `pages/events.html?event=${eventId}`;
         });
     });
 }

@@ -129,20 +129,70 @@ function loadStudentDashboard(user) {
 // Load organizer dashboard
 function loadOrganizerDashboard(user) {
     document.getElementById('organizerDashboard').style.display = 'block';
-    
+
+    // Display analytics
+    displayOrganizerAnalytics(user.id);
+
     const eventsGrid = document.getElementById('organizerEventsGrid');
     const createdEventIds = user.createdEvents || [];
-    
+
     if (createdEventIds.length === 0) {
         showEmptyState(eventsGrid, 'You haven\'t created any events yet', '📅');
         return;
     }
-    
+
     const createdEvents = createdEventIds
         .map(id => db.getEventById(id))
         .filter(event => event !== undefined);
-    
+
     eventsGrid.innerHTML = createdEvents.map(event => createOrganizerEventCard(event)).join('');
+}
+
+// Display organizer analytics
+function displayOrganizerAnalytics(organizerId) {
+    const analytics = db.getOrganizerAnalytics(organizerId);
+
+    // Create analytics section if it doesn't exist
+    let analyticsSection = document.getElementById('organizerAnalytics');
+    if (!analyticsSection) {
+        const organizerDashboard = document.getElementById('organizerDashboard');
+        analyticsSection = document.createElement('div');
+        analyticsSection.id = 'organizerAnalytics';
+        analyticsSection.className = 'section-card';
+        organizerDashboard.insertBefore(analyticsSection, organizerDashboard.firstChild);
+    }
+
+    analyticsSection.innerHTML = `
+        <h2>📊 Your Analytics</h2>
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <div class="analytics-value">${analytics.totalEvents}</div>
+                <div class="analytics-label">Total Events</div>
+            </div>
+            <div class="analytics-card">
+                <div class="analytics-value">${analytics.totalRegistrations}</div>
+                <div class="analytics-label">Total Registrations</div>
+            </div>
+            <div class="analytics-card">
+                <div class="analytics-value">${analytics.avgRegistrationRate}%</div>
+                <div class="analytics-label">Avg Registration Rate</div>
+            </div>
+            <div class="analytics-card">
+                <div class="analytics-value">${analytics.eventsByStatus.upcoming}</div>
+                <div class="analytics-label">Upcoming Events</div>
+            </div>
+        </div>
+        <div class="analytics-details">
+            <div class="detail-item">
+                <span>Ongoing Events:</span>
+                <strong>${analytics.eventsByStatus.ongoing}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Completed Events:</span>
+                <strong>${analytics.eventsByStatus.completed}</strong>
+            </div>
+        </div>
+    `;
 }
 
 // Create event card for organizer with action buttons
