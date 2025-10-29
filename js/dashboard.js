@@ -485,7 +485,7 @@ function createEvent() {
     const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : [];
 
     const imageUrl = document.getElementById('eventImage').value ||
-                     `https://via.placeholder.com/400x250/${Math.random() > 0.5 ? '6B9BD1' : '9B7EBD'}/FFFFFF?text=${encodeURIComponent(document.getElementById('eventTitle').value)}`;
+                     `https://via.placeholder.com/400x250/${Math.random() > 0.5 ? 'FF6B35' : '00A8E8'}/FFFFFF?text=${encodeURIComponent(document.getElementById('eventTitle').value)}`;
 
     const newEvent = {
         id: generateId('evt'),
