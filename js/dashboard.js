@@ -491,10 +491,12 @@ function showCreateEventForm() {
                 </select>
             </div>
 
+            ${createImageUploadHTML('eventImageUpload', 'eventImagePreview')}
+
             <div class="form-group">
-                <label class="form-label">Image URL</label>
+                <label class="form-label">Image URL (Alternative)</label>
                 <input type="text" id="eventImage" class="form-input" placeholder="https://...">
-                <p class="form-help">Leave empty for default image</p>
+                <p class="form-help">Or paste an image URL if you don't want to upload</p>
             </div>
 
             <div class="form-group">
@@ -513,6 +515,14 @@ function showCreateEventForm() {
             <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
         `;
     }
+
+    // Setup image upload handler with a small delay to ensure DOM is ready
+    let uploadedImageData = null;
+    setTimeout(() => {
+        setupImageUploadHandler('eventImageUpload', (base64) => {
+            uploadedImageData = base64;
+        });
+    }, 100);
 }
 
 // Create event
@@ -534,8 +544,15 @@ function createEvent() {
     const tagsInput = document.getElementById('eventTags').value;
     const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : [];
 
-    const imageUrl = document.getElementById('eventImage').value ||
-                     `https://via.placeholder.com/400x250/${Math.random() > 0.5 ? 'FF6B35' : '00A8E8'}/FFFFFF?text=${encodeURIComponent(document.getElementById('eventTitle').value)}`;
+    // Get image - prioritize uploaded image over URL
+    let imageUrl = null;
+    const uploadedImage = getUploadedImageData('eventImageUpload');
+    if (uploadedImage) {
+        imageUrl = uploadedImage;
+    } else {
+        imageUrl = document.getElementById('eventImage').value ||
+                   `https://via.placeholder.com/400x250/${Math.random() > 0.5 ? 'FF6B35' : '00A8E8'}/FFFFFF?text=${encodeURIComponent(document.getElementById('eventTitle').value)}`;
+    }
 
     const newEvent = {
         id: generateId('evt'),
@@ -556,6 +573,11 @@ function createEvent() {
 
     db.addEvent(newEvent);
 
+    // Store uploaded image if exists
+    if (uploadedImage) {
+        storeEventImage(newEvent.id, uploadedImage);
+    }
+
     // Add to user's created events
     if (!user.createdEvents) user.createdEvents = [];
     user.createdEvents.push(newEvent.id);
@@ -566,10 +588,21 @@ function createEvent() {
     loadDashboard(); // Reload dashboard
 }
 
+// Global variable to store uploaded image data during edit
+let editEventUploadedImage = null;
+
 // Edit event
 function editEvent(eventId) {
+    console.log('🔧 editEvent called with eventId:', eventId);
     const event = db.getEventById(eventId);
-    if (!event) return;
+    if (!event) {
+        console.error('❌ Event not found:', eventId);
+        return;
+    }
+    console.log('✅ Event found:', event);
+
+    // Reset uploaded image data
+    editEventUploadedImage = null;
 
     // Convert time back to 24-hour format for input
     const timeMatch = event.time.match(/(\d+):(\d+)\s*(AM|PM)/i);
@@ -636,12 +669,16 @@ function editEvent(eventId) {
                     <option value="upcoming" ${event.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
                     <option value="ongoing" ${event.status === 'ongoing' ? 'selected' : ''}>Ongoing</option>
                     <option value="completed" ${event.status === 'completed' ? 'selected' : ''}>Completed</option>
+                    <option value="cancelled" ${event.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                 </select>
             </div>
 
+            ${createImageUploadHTML('eventImageUploadEdit', 'eventImagePreviewEdit', event.image)}
+
             <div class="form-group">
-                <label class="form-label">Image URL</label>
+                <label class="form-label">Image URL (Alternative)</label>
                 <input type="text" id="eventImage" class="form-input" value="${event.image}">
+                <p class="form-help">Or paste an image URL if you don't want to upload</p>
             </div>
 
             <div class="form-group">
@@ -660,15 +697,39 @@ function editEvent(eventId) {
             <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
         `;
     }
+
+    // Setup image upload handler for edit form with a small delay to ensure DOM is ready
+    setTimeout(() => {
+        setupImageUploadHandler('eventImageUploadEdit', (base64) => {
+            editEventUploadedImage = base64;
+        });
+    }, 100);
 }
 
 // Save event changes
 function saveEventChanges(eventId) {
+    console.log('💾 saveEventChanges called with eventId:', eventId);
     const form = document.getElementById('editEventForm');
+    if (!form) {
+        console.error('❌ Form not found');
+        showToast('Form not found', 'error');
+        return;
+    }
+    console.log('✅ Form found');
+
     if (!form.checkValidity()) {
+        console.warn('⚠️ Form validation failed');
         form.reportValidity();
         return;
     }
+
+    const event = db.getEventById(eventId);
+    if (!event) {
+        console.error('❌ Event not found:', eventId);
+        showToast('Event not found', 'error');
+        return;
+    }
+    console.log('✅ Event found:', event);
 
     const timeValue = document.getElementById('eventTime').value;
     const [hours, minutes] = timeValue.split(':');
@@ -680,6 +741,14 @@ function saveEventChanges(eventId) {
     const tagsInput = document.getElementById('eventTags').value;
     const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : [];
 
+    // Get image - prioritize uploaded image over URL
+    let imageUrl = null;
+    if (editEventUploadedImage) {
+        imageUrl = editEventUploadedImage;
+    } else {
+        imageUrl = document.getElementById('eventImage').value;
+    }
+
     const updates = {
         title: document.getElementById('eventTitle').value,
         description: document.getElementById('eventDescription').value,
@@ -688,19 +757,119 @@ function saveEventChanges(eventId) {
         location: document.getElementById('eventLocation').value,
         category: document.getElementById('eventCategory').value,
         status: document.getElementById('eventStatus').value,
-        image: document.getElementById('eventImage').value,
+        image: imageUrl,
         maxCapacity: parseInt(document.getElementById('eventCapacity').value),
         tags: tags
     };
 
+    console.log('📝 Updates to apply:', updates);
     const success = db.updateEvent(eventId, updates);
+    console.log('🔄 Update result:', success);
 
     if (success) {
+        console.log('✅ Event updated successfully');
+        // Store uploaded image if exists
+        if (editEventUploadedImage) {
+            console.log('📸 Storing uploaded image');
+            storeEventImage(eventId, editEventUploadedImage);
+        }
+
+        // Detect what changed and send notifications to registered students
+        console.log('📢 Sending notifications to registered students');
+        notifyRegisteredStudentsOfChanges(eventId, event, updates);
+
+        // Reset uploaded image data
+        editEventUploadedImage = null;
+
         showToast('Event updated successfully!', 'success');
         closeModal();
         loadDashboard(); // Reload dashboard
     } else {
+        console.error('❌ Failed to update event');
         showToast('Failed to update event', 'error');
+    }
+}
+
+// Notify registered students of event changes
+function notifyRegisteredStudentsOfChanges(eventId, oldEvent, newUpdates) {
+    const event = db.getEventById(eventId);
+    if (!event || !event.registrations || event.registrations.length === 0) {
+        return; // No registered students
+    }
+
+    // Detect what changed
+    const changes = [];
+    let notificationType = 'event_update';
+    let notificationTitle = 'Event Updated';
+    let notificationMessage = `${event.title} has been updated`;
+
+    // Check for date change
+    if (oldEvent.date !== newUpdates.date) {
+        changes.push(`📅 Date changed from ${oldEvent.date} to ${newUpdates.date}`);
+        notificationType = 'event_update';
+        notificationTitle = 'Event Date Changed';
+        notificationMessage = `The date for ${event.title} has been changed to ${newUpdates.date}`;
+    }
+
+    // Check for time change
+    if (oldEvent.time !== newUpdates.time) {
+        changes.push(`🕐 Time changed from ${oldEvent.time} to ${newUpdates.time}`);
+        if (!changes.includes('date')) {
+            notificationTitle = 'Event Time Changed';
+            notificationMessage = `The time for ${event.title} has been changed to ${newUpdates.time}`;
+        }
+    }
+
+    // Check for location change
+    if (oldEvent.location !== newUpdates.location) {
+        changes.push(`📍 Location changed from ${oldEvent.location} to ${newUpdates.location}`);
+        notificationTitle = 'Event Location Changed';
+        notificationMessage = `The location for ${event.title} has been changed to ${newUpdates.location}`;
+    }
+
+    // Check for status change
+    if (oldEvent.status !== newUpdates.status) {
+        changes.push(`Status changed from ${oldEvent.status} to ${newUpdates.status}`);
+        if (newUpdates.status === 'cancelled') {
+            notificationType = 'event_cancelled';
+            notificationTitle = 'Event Cancelled';
+            notificationMessage = `${event.title} has been cancelled`;
+        } else {
+            notificationTitle = 'Event Status Changed';
+            notificationMessage = `${event.title} status has been changed to ${newUpdates.status}`;
+        }
+    }
+
+    // Check for capacity change
+    if (oldEvent.maxCapacity !== newUpdates.maxCapacity) {
+        changes.push(`Capacity changed from ${oldEvent.maxCapacity} to ${newUpdates.maxCapacity}`);
+    }
+
+    // Check for description change
+    if (oldEvent.description !== newUpdates.description) {
+        changes.push('Description has been updated');
+    }
+
+    // Send notifications to all registered students
+    if (changes.length > 0) {
+        event.registrations.forEach(studentId => {
+            if (typeof features !== 'undefined' && features.addNotification) {
+                features.addNotification(
+                    studentId,
+                    notificationType,
+                    notificationTitle,
+                    notificationMessage,
+                    {
+                        eventId: eventId,
+                        changes: changes,
+                        updatedAt: new Date().toISOString()
+                    }
+                );
+            }
+        });
+
+        // Log notification sent
+        console.log(`✅ Notifications sent to ${event.registrations.length} registered students for event: ${event.title}`);
     }
 }
 

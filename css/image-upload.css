@@ -1,0 +1,148 @@
+/* ===================================
+   IMAGE UPLOAD STYLES
+   =================================== */
+
+.image-upload-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.image-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #e0e0e0;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.image-preview:hover {
+    border-color: #FF6B35;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+}
+
+.upload-controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.file-input {
+    display: none;
+}
+
+.upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    border: 2px dashed #FF6B35;
+    border-radius: 8px;
+    background-color: rgba(255, 107, 53, 0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.upload-label:hover {
+    background-color: rgba(255, 107, 53, 0.1);
+    border-color: #E55A2B;
+}
+
+.upload-label:active {
+    transform: scale(0.98);
+}
+
+.upload-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.upload-text {
+    font-weight: 600;
+    color: #333;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.upload-hint {
+    font-size: 12px;
+    color: #666;
+    display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .image-upload-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .image-preview {
+        width: 120px;
+        height: 120px;
+    }
+
+    .upload-label {
+        padding: 20px 15px;
+    }
+
+    .upload-icon {
+        font-size: 24px;
+    }
+}
+
+/* File input drag and drop */
+.upload-label.drag-over {
+    background-color: rgba(255, 107, 53, 0.15);
+    border-color: #E55A2B;
+    transform: scale(1.02);
+}
+
+/* Success state */
+.image-preview.uploaded {
+    border-color: #00A8E8;
+    box-shadow: 0 4px 12px rgba(0, 168, 232, 0.2);
+}
+
+/* Loading state */
+.upload-label.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.upload-label.loading::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    border: 2px solid #FF6B35;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error state */
+.upload-label.error {
+    border-color: #ff4444;
+    background-color: rgba(255, 68, 68, 0.05);
+}
+
+.upload-label.error .upload-text {
+    color: #ff4444;
+}
+
