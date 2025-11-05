@@ -8,10 +8,10 @@ let selectedRole = 'student';
 document.addEventListener('DOMContentLoaded', () => {
     // Check if already logged in
     if (auth.isLoggedIn()) {
-        window.location.href = 'dashboard.html';
+        navigateToDashboard();
         return;
     }
-    
+
     setupRoleSelector();
     setupLoginForm();
 });
@@ -63,7 +63,7 @@ function setupLoginForm() {
             // Success - redirect to dashboard
             showToast('Login successful! Redirecting...', 'success');
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
+                navigateToDashboard();
             }, 1000);
         } else {
             // Show error

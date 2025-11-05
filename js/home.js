@@ -35,7 +35,7 @@ function loadHomeEvents() {
     eventsGrid.querySelectorAll('.event-card').forEach(card => {
         card.addEventListener('click', () => {
             const eventId = card.dataset.eventId;
-            window.location.href = `pages/events.html?event=${eventId}`;
+            navigateToEvents(eventId);
         });
     });
 }
@@ -61,7 +61,7 @@ function loadHomeNews() {
     newsGrid.querySelectorAll('.news-card').forEach(card => {
         card.addEventListener('click', () => {
             const newsId = card.dataset.newsId;
-            window.location.href = `pages/news.html?news=${newsId}`;
+            navigateToNews(newsId);
         });
     });
 }
@@ -95,7 +95,7 @@ function loadRecommendedEvents() {
     recommendedGrid.querySelectorAll('.event-card').forEach(card => {
         card.addEventListener('click', () => {
             const eventId = card.dataset.eventId;
-            window.location.href = `pages/events.html?event=${eventId}`;
+            navigateToEvents(eventId);
         });
     });
 }

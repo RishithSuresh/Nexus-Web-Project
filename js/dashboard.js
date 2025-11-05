@@ -6,10 +6,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Check if user is logged in
     if (!auth.isLoggedIn()) {
-        window.location.href = 'login.html';
+        navigateToLogin();
         return;
     }
-    
+
     loadDashboard();
     setupProfilePicUpload();
 });
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadDashboard() {
     const user = auth.getUserData();
     if (!user) {
-        window.location.href = 'login.html';
+        navigateToLogin();
         return;
     }
     
@@ -121,7 +121,7 @@ function loadStudentDashboard(user) {
     eventsGrid.querySelectorAll('.event-card').forEach(card => {
         card.addEventListener('click', () => {
             const eventId = card.dataset.eventId;
-            window.location.href = `events.html?event=${eventId}`;
+            navigateToEvents(eventId);
         });
     });
 }
@@ -388,7 +388,7 @@ function logout() {
     auth.logout();
     showToast('Logged out successfully', 'info');
     setTimeout(() => {
-        window.location.href = '../index.html';
+        navigateToHome();
     }, 1000);
 }
 
