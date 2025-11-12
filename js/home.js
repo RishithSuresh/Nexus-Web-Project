@@ -5,6 +5,9 @@
 
 // Wait for page to fully load before initializing
 window.addEventListener('load', () => {
+    // Show/hide dashboard link based on login status
+    updateDashboardLink();
+
     // Wait for loading screen to finish (3 seconds)
     setTimeout(() => {
         loadHomeEvents();
@@ -12,6 +15,22 @@ window.addEventListener('load', () => {
         loadRecommendedEvents();
     }, 3100);
 });
+
+// Show/hide dashboard link based on login status
+function updateDashboardLink() {
+    const dashboardLink = document.getElementById('dashboardLink');
+    const dashboardNavLink = document.getElementById('dashboardNavLink');
+
+    if (auth.isLoggedIn()) {
+        // Show dashboard link if logged in
+        if (dashboardLink) dashboardLink.style.display = 'block';
+        if (dashboardNavLink) dashboardNavLink.style.display = 'block';
+    } else {
+        // Hide dashboard link if not logged in
+        if (dashboardLink) dashboardLink.style.display = 'none';
+        if (dashboardNavLink) dashboardNavLink.style.display = 'none';
+    }
+}
 
 // Load top 3 upcoming events for home page
 function loadHomeEvents() {

@@ -8,7 +8,7 @@ let selectedRole = 'student';
 document.addEventListener('DOMContentLoaded', () => {
     // Check if already logged in
     if (auth.isLoggedIn()) {
-        navigateToDashboard();
+        navigateToHome();
         return;
     }
 
@@ -60,10 +60,10 @@ function setupLoginForm() {
                 return;
             }
             
-            // Success - redirect to dashboard
+            // Success - redirect to home page
             showToast('Login successful! Redirecting...', 'success');
             setTimeout(() => {
-                navigateToDashboard();
+                navigateToHome();
             }, 1000);
         } else {
             // Show error
