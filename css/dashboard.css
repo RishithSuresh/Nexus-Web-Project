@@ -53,6 +53,7 @@
     display: flex;
     gap: var(--spacing-sm);
     align-items: flex-start;
+    overflow: hidden;
 }
 
 .info-icon {
@@ -64,12 +65,16 @@
     display: block;
     color: var(--text-primary);
     margin-bottom: 4px;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .info-item p {
     color: var(--text-secondary);
     margin: 0;
     font-size: 0.95rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .spots-left {
@@ -234,15 +239,21 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
 }
 
 .detail-item span {
     color: var(--text-secondary);
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .detail-item strong {
     color: var(--primary-color);
     font-size: 1.1rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 /* Responsive */
