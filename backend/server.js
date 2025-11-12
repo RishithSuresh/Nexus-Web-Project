@@ -3,6 +3,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
+// Initialize database connection
+const pool = require('./config/database');
+
 const app = express();
 
 // Middleware
