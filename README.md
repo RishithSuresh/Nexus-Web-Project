@@ -1,14 +1,22 @@
 # Campus Connect - College Event Management System
 
-A modern, fully-functional campus event management website built with **HTML5, CSS3, and Vanilla JavaScript**. No backend server or APIs required - all data is stored locally using localStorage.
+A modern, fully-functional campus event management system with **Frontend (HTML5, CSS3, Vanilla JavaScript)** and **Backend (Node.js/Express + MySQL)**. Complete full-stack application with authentication, image uploads, and real-time data management.
 
 ## 🎨 Features
 
+### Technology Stack
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript (ES6+)
+- **Backend:** Node.js, Express.js
+- **Database:** MySQL with 8 tables
+- **Authentication:** JWT (JSON Web Tokens)
+- **Image Storage:** LONGBLOB (Base64 encoding)
+- **API:** 30+ RESTful endpoints
+
 ### Theme & Design
-- ✅ Light UI theme with pale soft colors
+- ✅ Modern UI with vibrant colors (Orange #FF6B35, Cyan #00A8E8, Yellow #FFD60A)
 - ✅ Modern clean typography for easy readability
 - ✅ Custom unique SVG logo used across all pages
-- ✅ Animated loading screen with logo animation
+- ✅ Animated login page with gradient background
 - ✅ Fully responsive design (desktop, tablet, mobile)
 - ✅ Smooth transitions and animations
 
@@ -63,38 +71,143 @@ A modern, fully-functional campus event management website built with **HTML5, C
 
 ```
 Campus-Connect/
-├── index.html              # Home page
+├── index.html                      # Home page
 ├── css/
-│   ├── main.css           # Main styles and theme
-│   ├── loading.css        # Loading screen animations
-│   ├── cards.css          # Card components and modals
-│   ├── pages.css          # Page-specific styles
-│   └── dashboard.css      # Dashboard styles
+│   ├── main.css                   # Main styles and theme
+│   ├── loading.css                # Loading screen animations
+│   ├── cards.css                  # Card components and modals
+│   ├── pages.css                  # Page-specific styles
+│   ├── dashboard.css              # Dashboard styles
+│   ├── login.css                  # Login page styles
+│   └── image-upload.css           # Image upload styles
 ├── js/
-│   ├── data.js            # Data management & localStorage
-│   ├── auth.js            # Authentication system
-│   ├── ui.js              # UI utilities and helpers
-│   ├── home.js            # Home page logic
-│   ├── events.js          # Events page logic
-│   ├── news.js            # News page logic
-│   ├── clubs.js           # Clubs page logic
-│   ├── login.js           # Login page logic
-│   └── dashboard.js       # Dashboard logic
+│   ├── data.js                    # Data management (localStorage)
+│   ├── auth.js                    # Authentication system
+│   ├── ui.js                      # UI utilities and helpers
+│   ├── home.js                    # Home page logic
+│   ├── events.js                  # Events page logic
+│   ├── news.js                    # News page logic
+│   ├── clubs.js                   # Clubs page logic
+│   ├── login.js                   # Login page logic
+│   ├── dashboard.js               # Dashboard logic
+│   ├── notifications.js           # Notifications logic
+│   ├── file-upload.js             # File upload handling
+│   ├── path-utils.js              # Path utilities
+│   ├── error-handler.js           # Error handling
+│   └── features.js                # Feature utilities
 ├── pages/
-│   ├── events.html        # Events page
-│   ├── news.html          # News page
-│   ├── clubs.html         # Clubs page
-│   ├── login.html         # Login page
-│   └── dashboard.html     # Dashboard page
-└── README.md              # This file
+│   ├── events.html                # Events page
+│   ├── news.html                  # News page
+│   ├── clubs.html                 # Clubs page
+│   ├── login.html                 # Login page
+│   └── dashboard.html             # Dashboard page
+├── backend/
+│   ├── server.js                  # Express server
+│   ├── package.json               # Node dependencies
+│   ├── .env                       # Environment configuration
+│   ├── config/
+│   │   └── database.js            # MySQL connection pool
+│   ├── middleware/
+│   │   └── auth.js                # JWT authentication
+│   ├── routes/
+│   │   ├── auth.js                # Authentication endpoints
+│   │   ├── events.js              # Events endpoints
+│   │   ├── news.js                # News endpoints
+│   │   ├── clubs.js               # Clubs endpoints
+│   │   ├── users.js               # Users endpoints
+│   │   └── notifications.js       # Notifications endpoints
+│   ├── database/
+│   │   └── schema.sql             # MySQL database schema
+│   └── README.md                  # API documentation
+└── README.md                      # This file
 ```
 
 ## 🚀 Getting Started
 
-### Installation
-1. Download or clone this project
-2. Open `index.html` in a modern web browser
-3. The database will auto-initialize with sample data on first load
+### Prerequisites
+- Node.js (v14+)
+- MySQL Server
+- Python 3 (for frontend server)
+- Modern web browser
+
+### Installation & Setup
+
+#### Step 1: Clone/Download Project
+```bash
+git clone <repository-url>
+cd Campus-Connect
+```
+
+#### Step 2: Install Backend Dependencies
+```bash
+cd backend
+npm install
+```
+
+#### Step 3: Configure MySQL Database
+
+**Option A: Using Command Line**
+```bash
+# Create database and tables
+mysql -u root -p < backend/database/schema.sql
+```
+
+**Option B: Using MySQL Workbench**
+1. Open MySQL Workbench
+2. File → Open SQL Script
+3. Select `backend/database/schema.sql`
+4. Execute (Ctrl+Shift+Enter)
+
+#### Step 4: Configure Backend Environment
+Edit `backend/.env`:
+```env
+# Server Configuration
+PORT=5000
+NODE_ENV=development
+
+# MySQL Database Configuration
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=campus_connect
+DB_PORT=3306
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_key_change_this_in_production
+JWT_EXPIRE=7d
+
+# CORS Configuration
+CORS_ORIGIN=http://localhost:8000
+```
+
+#### Step 5: Start Backend Server
+```bash
+cd backend
+npm run dev
+# Or for production: npm start
+```
+
+**Expected Output:**
+```
+✅ Server running on http://localhost:5000
+📝 Environment: development
+✅ MySQL Database connected successfully
+```
+
+#### Step 6: Start Frontend Server (New Terminal)
+```bash
+# From project root directory
+python -m http.server 8000
+# Or use any other HTTP server
+```
+
+**Expected Output:**
+```
+Serving HTTP on :: port 8000 (http://[::]:8000/) ...
+```
+
+#### Step 7: Access Application
+Open browser and navigate to: **http://localhost:8000**
 
 ### Demo Credentials
 
@@ -110,99 +223,88 @@ Campus-Connect/
 - Username: `organizer2`
 - Password: `organizer123`
 
-## 📝 How to Add/Edit Data
+## 🔌 API Endpoints
 
-### Adding Events
-Open `js/data.js` and add to the `SAMPLE_EVENTS` array:
-
-```javascript
-{
-    id: 'evt007',
-    title: 'Your Event Title',
-    description: 'Event description...',
-    date: '2024-12-10',
-    time: '02:00 PM',
-    location: 'Event Location',
-    category: 'Technology', // Technology, Cultural, Business, Environment, Sports, Career
-    organizer: 'org001',
-    organizerName: 'Organizer Name',
-    status: 'upcoming', // upcoming, ongoing, completed
-    image: 'https://via.placeholder.com/400x250/6B9BD1/FFFFFF?text=Event',
-    registrations: [],
-    maxCapacity: 100,
-    tags: ['Tag1', 'Tag2']
-}
+### Base URL
+```
+http://localhost:5000/api
 ```
 
-### Adding News
-Open `js/data.js` and add to the `SAMPLE_NEWS` array:
-
-```javascript
-{
-    id: 'news005',
-    title: 'News Title',
-    summary: 'Brief summary...',
-    content: 'Full news content...',
-    date: '2024-10-27',
-    author: 'Author Name',
-    category: 'Achievement', // Achievement, Technology, Environment, Sports, Cultural
-    image: 'https://via.placeholder.com/400x250/6B9BD1/FFFFFF?text=News',
-    tags: ['Tag1', 'Tag2']
-}
+### Authentication Endpoints
+```
+POST   /auth/register          # Register new user
+POST   /auth/login             # Login user
+GET    /auth/me                # Get current user
 ```
 
-### Adding Clubs
-Open `js/data.js` and add to the `SAMPLE_CLUBS` array:
-
-```javascript
-{
-    id: 'club004',
-    name: 'Club Name',
-    description: 'Club description...',
-    category: 'Technology', // Technology, Arts, Business, Sports, Social
-    contact: {
-        email: 'club@campusconnect.edu',
-        phone: '(555) 123-4567',
-        president: 'President Name',
-        advisor: 'Advisor Name'
-    },
-    members: 100,
-    meetingTime: 'Mondays, 5:00 PM',
-    location: 'Room 101',
-    image: 'https://via.placeholder.com/300x200/6B9BD1/FFFFFF?text=Club'
-}
+### Events Endpoints
+```
+GET    /events                 # Get all events
+GET    /events/:id             # Get event details
+POST   /events                 # Create event (organizer only)
+PUT    /events/:id             # Update event (organizer only)
+DELETE /events/:id             # Delete event (organizer only)
+POST   /events/:id/register    # Register for event
 ```
 
-### Adding Users
-Open `js/data.js` and add to the `SAMPLE_USERS` array:
-
-```javascript
-{
-    id: 'stu002',
-    username: 'newstudent',
-    password: 'password123',
-    role: 'student', // student or organizer
-    profile: {
-        name: 'Student Name',
-        email: 'student@student.edu',
-        phone: '(555) 111-2222',
-        department: 'Computer Science',
-        year: '2nd Year', // For students
-        // position: 'Professor', // For organizers
-        bio: 'Bio text...',
-        profilePic: ''
-    },
-    registeredEvents: [], // For students
-    // createdEvents: [], // For organizers
-    createdAt: '2024-10-27'
-}
+### News Endpoints
+```
+GET    /news                   # Get all news
+GET    /news/:id               # Get news details
+POST   /news                   # Create news (organizer only)
+PUT    /news/:id               # Update news (organizer only)
+DELETE /news/:id               # Delete news (organizer only)
 ```
 
-### Resetting Data
-To reset all data to default:
-1. Open browser console (F12)
-2. Run: `localStorage.clear()`
-3. Refresh the page
+### Clubs Endpoints
+```
+GET    /clubs                  # Get all clubs
+GET    /clubs/:id              # Get club details
+POST   /clubs/:id/join         # Join club
+POST   /clubs/:id/leave        # Leave club
+```
+
+### Users Endpoints
+```
+GET    /users/:id              # Get user profile
+PUT    /users/:id              # Update profile
+GET    /users/:id/notifications # Get notifications
+```
+
+### Notifications Endpoints
+```
+GET    /notifications          # Get all notifications
+GET    /notifications/count/unread # Get unread count
+PUT    /notifications/:id/read # Mark as read
+PUT    /notifications/read/all # Mark all as read
+DELETE /notifications/:id      # Delete notification
+```
+
+### Health Check
+```
+GET    /health                 # Check backend status
+```
+
+## 📝 Database Schema
+
+### Tables
+1. **users** - User accounts (students & organizers)
+2. **events** - Campus events with image support
+3. **event_registrations** - Student event registrations
+4. **news** - Campus news articles with image support
+5. **clubs** - Student clubs with image support
+6. **club_members** - Club memberships
+7. **notifications** - User notifications
+8. **event_tags** - Event categorization
+
+### Image Support
+All tables support image uploads via LONGBLOB columns:
+- **users.profile_pic** - User profile pictures
+- **events.image** - Event posters
+- **news.image** - News article images
+- **clubs.image** - Club logos/banners
+
+Images are stored as Base64-encoded strings.
 
 ## 🎯 Role-Based Features
 
@@ -213,31 +315,39 @@ To reset all data to default:
 - ✅ View their registered events
 - ✅ Edit their profile
 - ✅ Upload profile picture
+- ✅ View notifications
+- ✅ Search and filter events
 
 ### Students Cannot:
 - ❌ Create or edit events
 - ❌ View event registrations
 - ❌ Delete events
+- ❌ Create news articles
 
 ### Organizers Can:
 - ✅ Browse events, news, and clubs
-- ✅ Create new events
+- ✅ Create new events with images
 - ✅ Edit their own events
 - ✅ Delete their own events
 - ✅ View registrations for their events
+- ✅ Create news articles with images
 - ✅ Edit their profile
 - ✅ Upload profile picture
+- ✅ View notifications
+- ✅ Search and filter events
 
 ### Organizers Cannot:
 - ❌ Register for events (including their own)
 - ❌ Edit or delete other organizers' events
+- ❌ Edit or delete other organizers' news
 
 ## 🎨 Color Palette
 
-- **Primary Blue:** `#6B9BD1`
-- **Primary Light:** `#8AB4D5`
-- **Secondary Purple:** `#9B7EBD`
-- **Accent Pink:** `#F4A6A3`
+- **Primary Orange:** `#FF6B35`
+- **Primary Cyan:** `#00A8E8`
+- **Primary Yellow:** `#FFD60A`
+- **Login Purple:** `#667eea`
+- **Login Violet:** `#764ba2`
 - **Background:** `#FAFBFC`
 - **Card Background:** `#FFFFFF`
 - **Text Primary:** `#2C3E50`
@@ -245,18 +355,33 @@ To reset all data to default:
 
 ## 🔧 Technical Details
 
-### Data Storage
-- All data stored in browser's localStorage
-- Automatic initialization with sample data
-- Persistent across sessions
-- No backend server required
+### Frontend
+- **Language:** Vanilla JavaScript (ES6+)
+- **Styling:** CSS3 with Flexbox & Grid
+- **Storage:** localStorage for session data
+- **HTTP Server:** Python or any static server
+
+### Backend
+- **Runtime:** Node.js
+- **Framework:** Express.js
+- **Database:** MySQL
+- **Authentication:** JWT (JSON Web Tokens)
+- **Password Hashing:** bcryptjs
+- **CORS:** Enabled for frontend communication
+
+### Database
+- **Type:** MySQL
+- **Tables:** 8 (users, events, news, clubs, etc.)
+- **Image Storage:** LONGBLOB (Base64 encoded)
+- **Relationships:** Foreign keys with cascading deletes
+- **Indexes:** Optimized for performance
 
 ### Browser Compatibility
 - Chrome (recommended)
 - Firefox
 - Safari
 - Edge
-- Any modern browser with localStorage support
+- Any modern browser with ES6 support
 
 ### Responsive Breakpoints
 - Desktop: > 768px
@@ -265,7 +390,7 @@ To reset all data to default:
 
 ## 📱 Features Implemented
 
-- ✅ Loading screen with animated logo
+### Frontend Features
 - ✅ Responsive navigation with mobile menu
 - ✅ Search and filter functionality
 - ✅ Modal popups for details
@@ -274,24 +399,126 @@ To reset all data to default:
 - ✅ Image upload (base64)
 - ✅ Role-based access control
 - ✅ Session management
-- ✅ CRUD operations for events
-- ✅ Event registration system
 - ✅ Profile management
 - ✅ Smooth animations and transitions
+- ✅ Event registration system
+- ✅ Notification system
+
+### Backend Features
+- ✅ RESTful API with 30+ endpoints
+- ✅ JWT authentication
+- ✅ Role-based authorization
+- ✅ MySQL database integration
+- ✅ Image upload support (LONGBLOB)
+- ✅ CRUD operations for all resources
+- ✅ Error handling and validation
+- ✅ CORS protection
+- ✅ Connection pooling
+- ✅ Password hashing (bcryptjs)
+
+### Database Features
+- ✅ 8 normalized tables
+- ✅ Foreign key relationships
+- ✅ Cascading deletes
+- ✅ Indexed columns for performance
+- ✅ LONGBLOB for image storage
+- ✅ Timestamps for audit trail
+
+## 🐛 Troubleshooting
+
+### Backend Issues
+
+**Error: "Cannot find module 'express'"**
+```bash
+cd backend
+npm install
+```
+
+**Error: "Access denied for user 'root'@'localhost'"**
+1. Check MySQL is running
+2. Update credentials in `backend/.env`
+3. Verify MySQL password is correct
+
+**Error: "Unknown database 'campus_connect'"**
+```bash
+mysql -u root -p < backend/database/schema.sql
+```
+
+**Error: "Port 5000 already in use"**
+```bash
+# Change PORT in backend/.env
+# Or kill the process using port 5000
+```
+
+### Frontend Issues
+
+**Pages not loading**
+- Check frontend server is running on port 8000
+- Clear browser cache (Ctrl+Shift+Delete)
+- Check browser console for errors (F12)
+
+**API calls failing**
+- Verify backend is running on port 5000
+- Check CORS_ORIGIN in backend/.env
+- Verify JWT token is valid
+
+**Images not uploading**
+- Check file size (max 5MB)
+- Verify file format (JPEG, PNG, GIF, WebP)
+- Check browser console for errors
+
+### Database Issues
+
+**Cannot connect to MySQL**
+```bash
+# Start MySQL service
+net start MySQL80  # Windows
+# or
+brew services start mysql  # macOS
+```
+
+**Tables not created**
+```bash
+# Verify database exists
+mysql -u root -p -e "SHOW DATABASES;"
+
+# Create tables
+mysql -u root -p campus_connect < backend/database/schema.sql
+```
+
+## 📊 Testing
+
+### Test Backend Health
+```bash
+curl http://localhost:5000/api/health
+```
+
+### Test Login
+```bash
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"student","password":"student123","role":"student"}'
+```
+
+### Test Get Events
+```bash
+curl http://localhost:5000/api/events
+```
 
 ## 🎓 Educational Use
 
 This project demonstrates:
-- Modern CSS techniques (Grid, Flexbox, CSS Variables)
-- Vanilla JavaScript (ES6+)
-- LocalStorage API
-- DOM manipulation
-- Event handling
-- Form validation
-- Responsive design
+- Full-stack web development
+- Frontend: HTML5, CSS3, Vanilla JavaScript (ES6+)
+- Backend: Node.js, Express.js
+- Database: MySQL with relationships
+- Authentication: JWT tokens
+- API Design: RESTful principles
+- Image handling: Base64 encoding
+- Responsive design: Mobile-first approach
 - Component-based architecture
 - State management
-- Authentication flow
+- Error handling and validation
 
 ## 📄 License
 
@@ -299,11 +526,27 @@ This project is open source and available for educational purposes.
 
 ## 👨‍💻 Development
 
-Built with ❤️ using only HTML5, CSS3, and Vanilla JavaScript.
+Built with ❤️ using:
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript
+- **Backend:** Node.js, Express.js
+- **Database:** MySQL
 
-No frameworks, no libraries, no backend - just pure web technologies!
+Full-stack application with modern web technologies!
+
+---
+
+## 📞 Support
+
+For issues or questions:
+1. Check the troubleshooting section above
+2. Review backend logs in terminal
+3. Check browser console (F12)
+4. See `backend/README.md` for API documentation
 
 ---
 
 **Campus Connect** - Connecting students, events, and opportunities across campus.
+
+**Version:** 2.0 (Full-Stack)
+**Last Updated:** November 2025
 
