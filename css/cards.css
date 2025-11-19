@@ -33,7 +33,7 @@
     top: 12px;
     right: 12px;
     background: var(--accent-color);
-    color: var(--text-primary);
+    color: white;
     padding: 4px 12px;
     border-radius: var(--radius-sm);
     font-size: 0.75rem;
@@ -418,7 +418,7 @@
 }
 
 .organized-event-item {
-    background: linear-gradient(135deg, #FFF9F0 0%, #F0F9FF 100%);
+    background: linear-gradient(135deg, #E8F7F4 0%, #FFF9E6 100%);
     border-left: 4px solid var(--primary-color);
     padding: var(--spacing-md);
     border-radius: var(--radius-md);
@@ -426,16 +426,16 @@
 }
 
 .organized-event-item:hover {
-    background: linear-gradient(135deg, #FFE6D5 0%, #D5F0FF 100%);
+    background: linear-gradient(135deg, #D0F4EF 0%, #FFF5D9 100%);
     transform: translateX(4px);
-    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.15);
+    box-shadow: 0 2px 8px rgba(6, 100, 102, 0.15);
 }
 
 /* Event Rating & Reviews */
 .event-rating-section {
     margin-top: var(--spacing-lg);
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, #FFF9F0 0%, #F0F9FF 100%);
+    background: linear-gradient(135deg, #FFF9E6 0%, #FFE6D5 100%);
     border-radius: var(--radius-md);
     border-left: 4px solid var(--accent-color);
 }

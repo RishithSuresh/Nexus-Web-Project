@@ -5,26 +5,26 @@
 
 /* CSS Variables for Easy Theming */
 :root {
-    /* Color Palette - Bright & Striking */
-    --primary-color: #FF6B35;
-    --primary-light: #FF8C5A;
-    --primary-dark: #E55A2B;
-    --secondary-color: #00A8E8;
-    --secondary-light: #00D4FF;
-    --accent-color: #FFD60A;
-    --accent-light: #FFE66D;
+    /* Color Palette - Fresh & Professional (Growth, Harmony, Mental Clarity) */
+    --primary-color: #066466;
+    --primary-light: #0E8B8F;
+    --primary-dark: #05525F;
+    --secondary-color: #B4F8C8;
+    --secondary-light: #D4FADD;
+    --accent-color: #FF921C;
+    --accent-light: #FFB266;
 
     /* Neutral Colors */
-    --bg-color: #F8F9FA;
-    --bg-secondary: #F0F3F7;
+    --bg-color: #FFFDF2;
+    --bg-secondary: #FFF9E6;
     --bg-card: #FFFFFF;
     --text-primary: #1A1A1A;
     --text-secondary: #4A4A4A;
     --text-light: #7A7A7A;
-    --border-color: #E0E0E0;
-    --shadow-sm: 0 2px 8px rgba(255, 107, 53, 0.08);
-    --shadow-md: 0 4px 16px rgba(255, 107, 53, 0.12);
-    --shadow-lg: 0 8px 24px rgba(255, 107, 53, 0.16);
+    --border-color: #E8E0D0;
+    --shadow-sm: 0 2px 8px rgba(6, 100, 102, 0.08);
+    --shadow-md: 0 4px 16px rgba(6, 100, 102, 0.12);
+    --shadow-lg: 0 8px 24px rgba(6, 100, 102, 0.16);
     
     /* Typography */
     --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -367,7 +367,7 @@ a:hover {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, #E8F4F8 0%, #F0E8F4 100%);
+    background: linear-gradient(135deg, #E8F7F4 0%, #FFF9E6 100%);
     padding: var(--spacing-xl) var(--spacing-md);
     text-align: center;
     border-bottom: 1px solid var(--border-color);
@@ -460,15 +460,15 @@ a:hover {
 .home-news,
 .home-recommended {
     padding: var(--spacing-xl) var(--spacing-md);
-    background: var(--bg-secondary);
-}
-
-.home-news {
     background: var(--bg-color);
 }
 
+.home-news {
+    background: var(--bg-secondary);
+}
+
 .home-recommended {
-    background: linear-gradient(135deg, #FFF5E6 0%, #E6F7FF 100%);
+    background: linear-gradient(135deg, #E8F7F4 0%, #FFF9E6 100%);
 }
 
 .section-subtitle {

@@ -5,7 +5,7 @@
 
 /* Page Header */
 .page-header {
-    background: linear-gradient(135deg, #FFF5E6 0%, #E6F7FF 100%);
+    background: linear-gradient(135deg, #E8F7F4 0%, #FFF9E6 100%);
     padding: var(--spacing-xl) var(--spacing-md);
     text-align: center;
     border-bottom: 1px solid var(--border-color);
@@ -57,7 +57,7 @@
 .search-input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(107, 155, 209, 0.1);
+    box-shadow: 0 0 0 3px rgba(6, 100, 102, 0.1);
 }
 
 .search-icon {
@@ -87,7 +87,7 @@
 .filter-select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(107, 155, 209, 0.1);
+    box-shadow: 0 0 0 3px rgba(6, 100, 102, 0.1);
 }
 
 .filter-input {
@@ -104,7 +104,7 @@
 .filter-input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    box-shadow: 0 0 0 3px rgba(6, 100, 102, 0.1);
 }
 
 /* Content Sections */
@@ -150,7 +150,7 @@
 .form-select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(107, 155, 209, 0.1);
+    box-shadow: 0 0 0 3px rgba(6, 100, 102, 0.1);
 }
 
 .form-textarea {
@@ -177,7 +177,7 @@
     justify-content: center;
     align-items: center;
     padding: var(--spacing-xl) var(--spacing-md);
-    background: linear-gradient(135deg, #FFF5E6 0%, #E6F7FF 100%);
+    background: linear-gradient(135deg, #E8F7F4 0%, #FFF9E6 100%);
 }
 
 .login-box {
@@ -226,7 +226,7 @@
 
 .role-option.active {
     border-color: var(--primary-color);
-    background: linear-gradient(135deg, rgba(107, 155, 209, 0.1), rgba(155, 126, 189, 0.1));
+    background: linear-gradient(135deg, rgba(6, 100, 102, 0.1), rgba(180, 248, 200, 0.1));
 }
 
 .role-icon {
@@ -264,7 +264,7 @@
 }
 
 .dashboard-header {
-    background: linear-gradient(135deg, #FFF5E6 0%, #E6F7FF 100%);
+    background: linear-gradient(135deg, #E8F7F4 0%, #FFF9E6 100%);
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
     margin-bottom: var(--spacing-lg);

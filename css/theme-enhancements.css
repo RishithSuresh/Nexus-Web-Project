@@ -1,0 +1,361 @@
+/* ===================================
+   THEME ENHANCEMENTS
+   Additional visual polish with new color palette
+   =================================== */
+
+/* Gradient Overlays for Visual Interest */
+.hero-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(180, 248, 200, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Hover effects on navigation */
+.nav-link {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Button Group Enhancement */
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Link card animations */
+.link-card {
+    position: relative;
+}
+
+.link-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    padding: 1px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.link-card:hover::before {
+    opacity: 1;
+}
+
+/* Card glow effect on hover */
+.event-card:hover,
+.news-card:hover,
+.club-card:hover {
+    box-shadow: 0 0 30px rgba(6, 100, 102, 0.15);
+}
+
+/* Text gradient effect */
+.hero-title,
+.page-header h1 {
+    position: relative;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+/* Quick links grid enhancement */
+.links-grid {
+    perspective: 1000px;
+}
+
+.link-card {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.link-card:hover {
+    transform: translateY(-12px) rotateX(5deg);
+}
+
+/* Section title animation */
+.section-title {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    border-radius: 2px;
+}
+
+/* Badge pulse animation */
+.notification-badge {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Analytics card enhancement */
+.analytics-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.analytics-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--secondary-color), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.analytics-card:hover::before {
+    opacity: 0.1;
+}
+
+.analytics-card:hover .analytics-value {
+    color: var(--primary-color);
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+/* Primary color accent line in cards */
+.event-card::before,
+.news-card::before,
+.club-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.event-card:hover::before,
+.news-card:hover::before,
+.club-card:hover::before {
+    opacity: 1;
+}
+
+/* Form input enhancement */
+.form-input,
+.form-textarea,
+.form-select,
+.search-input,
+.filter-select,
+.filter-input {
+    position: relative;
+    transition: all 0.3s ease;
+    border-color: var(--border-color);
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus,
+.search-input:focus,
+.filter-select:focus,
+.filter-input:focus {
+    border-color: var(--primary-color);
+    background-color: rgba(180, 248, 200, 0.02);
+}
+
+/* Modal enhancement */
+.modal {
+    animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Footer link hover effect */
+.footer-section a {
+    position: relative;
+}
+
+.footer-section a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--secondary-color);
+    transition: width 0.3s ease;
+}
+
+.footer-section a:hover::after {
+    width: 100%;
+}
+
+/* Brand color emphasis */
+.logo-text,
+.btn-primary,
+.btn-secondary {
+    text-shadow: 0 2px 4px rgba(6, 100, 102, 0.1);
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* Selection styling */
+::selection {
+    background: var(--primary-color);
+    color: white;
+}
+
+::-moz-selection {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Backdrop blur for modern browsers */
+@supports (backdrop-filter: blur(10px)) {
+    .modal {
+        backdrop-filter: blur(10px);
+    }
+}
+
+/* Dark mode support (future-proofing) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-primary: #F5F5F5;
+        --text-secondary: #CCCCCC;
+        --text-light: #999999;
+    }
+}
+
+/* Enhanced focus states for accessibility */
+.btn:focus-visible,
+.nav-link:focus-visible,
+.form-input:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Smooth page transitions */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
