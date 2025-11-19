@@ -133,7 +133,8 @@ a:hover {
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+    /* Use action / alert colors for secondary buttons (Join Clubs) */
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
     color: white;
     box-shadow: var(--shadow-sm);
 }
