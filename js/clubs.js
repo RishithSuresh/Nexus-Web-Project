@@ -144,6 +144,13 @@ function showClubDetails(clubId) {
                 </div>
 
                 ${eventsListHTML}
+
+                <div class="detail-section">
+                    <h3>👥 Members</h3>
+                    <div class="members-list">
+                        ${renderClubMembers(club.id)}
+                    </div>
+                </div>
             </div>
         </div>
     `;
@@ -151,5 +158,28 @@ function showClubDetails(clubId) {
     showModal('Club Details', modalContent, [
         { text: 'Close', onclick: 'closeModal()', class: 'btn-outline' }
     ]);
+}
+
+// Render HTML for club members
+function renderClubMembers(clubId) {
+    const members = db.getClubMembers(clubId);
+    if (!members || members.length === 0) {
+        return '<p>No members listed yet.</p>';
+    }
+
+    return `
+        <table class="registrations-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Department</th></tr></thead>
+            <tbody>
+                ${members.map(m => `
+                    <tr>
+                        <td>${m.profile.name}</td>
+                        <td><a href="mailto:${m.profile.email}">${m.profile.email}</a></td>
+                        <td>${m.profile.department || 'N/A'}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
 }
 

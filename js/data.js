@@ -25,6 +25,7 @@ const SAMPLE_EVENTS = [
         status: 'upcoming',
         image: 'https://via.placeholder.com/400x250/6B9BD1/FFFFFF?text=Tech+Summit',
         registrations: [],
+        waitlist: [],
         maxCapacity: 200,
         tags: ['Technology', 'Innovation', 'Networking']
     },
@@ -41,6 +42,7 @@ const SAMPLE_EVENTS = [
         status: 'upcoming',
         image: 'https://via.placeholder.com/400x250/9B7EBD/FFFFFF?text=Cultural+Fest',
         registrations: [],
+        waitlist: [],
         maxCapacity: 500,
         tags: ['Cultural', 'Arts', 'Music', 'Dance']
     },
@@ -57,6 +59,7 @@ const SAMPLE_EVENTS = [
         status: 'ongoing',
         image: 'https://via.placeholder.com/400x250/F4A6A3/FFFFFF?text=Startup+Pitch',
         registrations: ['stu001'],
+        waitlist: [],
         maxCapacity: 50,
         tags: ['Business', 'Entrepreneurship', 'Competition']
     },
@@ -73,6 +76,7 @@ const SAMPLE_EVENTS = [
         status: 'upcoming',
         image: 'https://via.placeholder.com/400x250/81C784/FFFFFF?text=Environment',
         registrations: [],
+        waitlist: [],
         maxCapacity: 100,
         tags: ['Environment', 'Sustainability', 'Workshop']
     },
@@ -89,6 +93,7 @@ const SAMPLE_EVENTS = [
         status: 'upcoming',
         image: 'https://via.placeholder.com/400x250/64B5F6/FFFFFF?text=Sports+Finals',
         registrations: [],
+        waitlist: [],
         maxCapacity: 1000,
         tags: ['Sports', 'Competition', 'Championship']
     },
@@ -105,6 +110,7 @@ const SAMPLE_EVENTS = [
         status: 'upcoming',
         image: 'https://via.placeholder.com/400x250/FFB74D/FFFFFF?text=Career+Fair',
         registrations: [],
+        waitlist: [],
         maxCapacity: 300,
         tags: ['Career', 'Jobs', 'Networking']
     }
@@ -175,7 +181,8 @@ const SAMPLE_CLUBS = [
         meetingTime: 'Fridays, 4:00 PM',
         location: 'Computer Lab, Building B',
         image: 'https://via.placeholder.com/300x200/6B9BD1/FFFFFF?text=Coding+Club',
-        organizedEvents: ['evt001', 'evt003']  // Tech Summit, Startup Pitch
+        organizedEvents: ['evt001', 'evt003'],  // Tech Summit, Startup Pitch
+        memberIds: ['stu001']
     },
     {
         id: 'club002',
@@ -192,7 +199,8 @@ const SAMPLE_CLUBS = [
         meetingTime: 'Tuesdays & Thursdays, 5:30 PM',
         location: 'Theater Hall',
         image: 'https://via.placeholder.com/300x200/9B7EBD/FFFFFF?text=Drama+Society',
-        organizedEvents: ['evt002']  // Annual Cultural Fest
+        organizedEvents: ['evt002'],  // Annual Cultural Fest
+        memberIds: []
     },
     {
         id: 'club003',
@@ -209,7 +217,8 @@ const SAMPLE_CLUBS = [
         meetingTime: 'Wednesdays, 6:00 PM',
         location: 'Innovation Hub',
         image: 'https://via.placeholder.com/300x200/F4A6A3/FFFFFF?text=E-Cell',
-        organizedEvents: ['evt003', 'evt004']  // Startup Pitch, Environmental Workshop
+        organizedEvents: ['evt003', 'evt004'],  // Startup Pitch, Environmental Workshop
+        memberIds: []
     }
 ];
 
@@ -346,6 +355,29 @@ class Database {
         const news = this.getNews();
         return news.find(item => item.id === id);
     }
+    
+    addNews(newsItem) {
+        const news = this.getNews();
+        news.push(newsItem);
+        this.setNews(news);
+    }
+
+    updateNews(id, updatedNews) {
+        const news = this.getNews();
+        const index = news.findIndex(n => n.id === id);
+        if (index !== -1) {
+            news[index] = { ...news[index], ...updatedNews };
+            this.setNews(news);
+            return true;
+        }
+        return false;
+    }
+
+    deleteNews(id) {
+        const news = this.getNews();
+        const filtered = news.filter(n => n.id !== id);
+        this.setNews(filtered);
+    }
 
     // Clubs Methods
     getClubs() {
@@ -359,6 +391,41 @@ class Database {
     getClubById(id) {
         const clubs = this.getClubs();
         return clubs.find(club => club.id === id);
+    }
+
+    // Club member management
+    getClubMembers(clubId) {
+        const club = this.getClubById(clubId);
+        if (!club || !club.memberIds) return [];
+        return club.memberIds.map(id => this.getUserById(id)).filter(u => u !== undefined && u !== null);
+    }
+
+    addMemberToClub(clubId, userId) {
+        const clubs = this.getClubs();
+        const index = clubs.findIndex(c => c.id === clubId);
+        if (index === -1) return false;
+        const club = clubs[index];
+        if (!club.memberIds) club.memberIds = [];
+        if (!club.memberIds.includes(userId)) club.memberIds.push(userId);
+        // update member count if exists
+        if (typeof club.members === 'number') club.members = Math.max(club.members, club.memberIds.length);
+        clubs[index] = club;
+        this.setClubs(clubs);
+        return true;
+    }
+
+    removeMemberFromClub(clubId, userId) {
+        const clubs = this.getClubs();
+        const index = clubs.findIndex(c => c.id === clubId);
+        if (index === -1) return false;
+        const club = clubs[index];
+        if (!club.memberIds) club.memberIds = [];
+        club.memberIds = club.memberIds.filter(id => id !== userId);
+        // update member count
+        if (typeof club.members === 'number') club.members = club.memberIds.length;
+        clubs[index] = club;
+        this.setClubs(clubs);
+        return true;
     }
 
     // Users Methods
@@ -392,27 +459,101 @@ class Database {
     }
 
     // Registration Methods
+
+    // Register for event, add to waitlist if full
     registerForEvent(userId, eventId) {
         const event = this.getEventById(eventId);
         const user = this.getUserById(userId);
-        
         if (!event || !user) return false;
-        
-        // Check if already registered
-        if (event.registrations.includes(userId)) return false;
-        
-        // Check capacity
+        // Already registered
+        if (event.registrations.includes(userId)) return 'already-registered';
+        // Already waitlisted
+        if (event.waitlist && event.waitlist.includes(userId)) return 'already-waitlisted';
+        // Register if space
+        if (event.registrations.length < event.maxCapacity) {
+            event.registrations.push(userId);
+            this.updateEvent(eventId, event);
+            if (!user.registeredEvents) user.registeredEvents = [];
+            user.registeredEvents.push(eventId);
+            this.updateUser(userId, user);
+            return 'registered';
+        } else {
+            // Add to waitlist
+            if (!event.waitlist) event.waitlist = [];
+            event.waitlist.push(userId);
+            this.updateEvent(eventId, event);
+            return 'waitlisted';
+        }
+    }
+
+    // Remove user from event registration or waitlist
+    unregisterFromEvent(userId, eventId) {
+        const event = this.getEventById(eventId);
+        const user = this.getUserById(userId);
+        if (!event || !user) return false;
+        let changed = false;
+        // Remove from registrations
+        if (event.registrations.includes(userId)) {
+            event.registrations = event.registrations.filter(id => id !== userId);
+            changed = true;
+            // Remove from user
+            if (user.registeredEvents) {
+                user.registeredEvents = user.registeredEvents.filter(id => id !== eventId);
+                this.updateUser(userId, user);
+            }
+            // Promote from waitlist if any
+            if (event.waitlist && event.waitlist.length > 0) {
+                const nextUserId = event.waitlist.shift();
+                event.registrations.push(nextUserId);
+                // Update promoted user's registeredEvents
+                const nextUser = this.getUserById(nextUserId);
+                if (nextUser) {
+                    if (!nextUser.registeredEvents) nextUser.registeredEvents = [];
+                    nextUser.registeredEvents.push(eventId);
+                    this.updateUser(nextUserId, nextUser);
+                }
+            }
+        }
+        // Remove from waitlist
+        if (event.waitlist && event.waitlist.includes(userId)) {
+            event.waitlist = event.waitlist.filter(id => id !== userId);
+            changed = true;
+        }
+        if (changed) {
+            this.updateEvent(eventId, event);
+            return true;
+        }
+        return false;
+    }
+
+    // Get waitlist for an event
+    getEventWaitlist(eventId) {
+        const event = this.getEventById(eventId);
+        if (!event || !event.waitlist) return [];
+        return event.waitlist.map(id => this.getUserById(id)).filter(u => u);
+    }
+
+    // Check if user is waitlisted for event
+    isUserWaitlisted(userId, eventId) {
+        const event = this.getEventById(eventId);
+        return event && event.waitlist && event.waitlist.includes(userId);
+    }
+
+    // Promote next user from waitlist (manual trigger)
+    promoteNextWaitlisted(eventId) {
+        const event = this.getEventById(eventId);
+        if (!event || !event.waitlist || event.waitlist.length === 0) return false;
         if (event.registrations.length >= event.maxCapacity) return false;
-        
-        // Add registration
-        event.registrations.push(userId);
+        const nextUserId = event.waitlist.shift();
+        event.registrations.push(nextUserId);
         this.updateEvent(eventId, event);
-        
-        // Update user's registered events
-        if (!user.registeredEvents) user.registeredEvents = [];
-        user.registeredEvents.push(eventId);
-        this.updateUser(userId, user);
-        
+        // Update promoted user's registeredEvents
+        const nextUser = this.getUserById(nextUserId);
+        if (nextUser) {
+            if (!nextUser.registeredEvents) nextUser.registeredEvents = [];
+            nextUser.registeredEvents.push(eventId);
+            this.updateUser(nextUserId, nextUser);
+        }
         return true;
     }
 

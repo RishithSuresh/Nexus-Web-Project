@@ -99,20 +99,23 @@ function updateNavigation() {
     const authButton = document.getElementById('authButton');
     const logoutButton = document.getElementById('logoutButton');
     if (!authButton) return;
-    
-    if (auth.isLoggedIn()) {
+    // Only consider user logged in if session exists and user data looks valid
+    const sessionUser = auth.getCurrentUser ? auth.getCurrentUser() : auth.currentUser;
+    const fullUser = auth.getUserData();
+
+    if (auth.isLoggedIn() && fullUser) {
         authButton.textContent = 'Dashboard';
         authButton.href = 'pages/dashboard.html';
         authButton.classList.remove('login-btn');
         authButton.classList.add('dashboard-btn');
         if (logoutButton) {
             logoutButton.style.display = 'inline-block';
-            logoutButton.addEventListener('click', () => {
+            // use onclick to avoid adding duplicate listeners
+            logoutButton.onclick = () => {
                 auth.logout();
                 try { if (typeof showToast === 'function') showToast('Logged out', 'info'); } catch(e) {}
-                // navigate to home using path utils if available
                 try { navigateToHome(); } catch(e) { window.location.href = '../index.html'; }
-            });
+            };
         }
     } else {
         authButton.textContent = 'Login';
@@ -121,7 +124,7 @@ function updateNavigation() {
         authButton.classList.remove('dashboard-btn');
         if (logoutButton) {
             logoutButton.style.display = 'none';
-            logoutButton.removeEventListener && logoutButton.removeEventListener('click', () => {});
+            logoutButton.onclick = null;
         }
     }
 

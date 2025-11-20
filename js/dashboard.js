@@ -37,6 +37,104 @@ function loadDashboard() {
     }
 }
 
+/* ------------------ News creation for organizers ------------------ */
+function showCreateNewsForm() {
+    const formHTML = `
+        <form id="createNewsForm" class="news-form">
+            <div class="form-group">
+                <label class="form-label">Title *</label>
+                <input type="text" id="newsTitle" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Summary *</label>
+                <input type="text" id="newsSummary" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Content *</label>
+                <textarea id="newsContent" class="form-textarea" required></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Date</label>
+                <input type="date" id="newsDate" class="form-input">
+            </div>
+
+            ${createImageUploadHTML('newsImageUpload', 'newsImagePreview')}
+
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <input type="text" id="newsCategory" class="form-input" placeholder="e.g., Announcement">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tags (comma-separated)</label>
+                <input type="text" id="newsTags" class="form-input" placeholder="campus,announcement">
+            </div>
+        </form>
+    `;
+
+    showModal('Publish News', formHTML, []);
+
+    const modalFooter = document.querySelector('.modal-footer');
+    if (modalFooter) {
+        modalFooter.innerHTML = `
+            <button class="btn btn-primary" onclick="createNews()">Publish</button>
+            <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+        `;
+    }
+
+    // Setup image upload handler
+    setTimeout(() => {
+        setupImageUploadHandler('newsImageUpload', (base64) => {
+            // preview handled by handler
+        });
+    }, 50);
+}
+
+function createNews() {
+    const form = document.getElementById('createNewsForm');
+    if (!form) return showToast('Form not found', 'error');
+
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const user = auth.getUserData();
+    const title = document.getElementById('newsTitle').value;
+    const summary = document.getElementById('newsSummary').value;
+    const content = document.getElementById('newsContent').value;
+    const dateVal = document.getElementById('newsDate').value || new Date().toISOString().slice(0,10);
+    const category = document.getElementById('newsCategory').value || 'General';
+    const tagsInput = document.getElementById('newsTags').value;
+    const tags = tagsInput ? tagsInput.split(',').map(t=>t.trim()) : [];
+
+    const uploadedImage = getUploadedImageData('newsImageUpload');
+
+    const newsItem = {
+        id: generateId('news'),
+        title,
+        summary,
+        content,
+        date: dateVal,
+        author: user.profile.name,
+        category,
+        image: uploadedImage || `https://via.placeholder.com/400x250/9B7EBD/FFFFFF?text=${encodeURIComponent(title)}`,
+        tags
+    };
+
+    db.addNews(newsItem);
+
+    // store uploaded image separately if provided
+    if (uploadedImage) {
+        storeNewsImage(newsItem.id, uploadedImage);
+    }
+
+    showToast('News published', 'success');
+    closeModal();
+    // Reload dashboard/news pages
+    try { loadDashboard(); } catch(e) {}
+}
+
 // Load user profile
 function loadProfile(user) {
     const profile = user.profile;
@@ -143,6 +241,7 @@ function loadOrganizerDashboard(user) {
                 <h3>Quick Actions</h3>
                 <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
                     <button class="btn btn-primary" onclick="showCreateEventForm()">+ Create Event</button>
+                    <button class="btn btn-primary" onclick="showCreateNewsForm()">+ Publish News</button>
                     <button class="btn btn-outline" onclick="features.markAllAsRead && features.markAllAsRead(auth.getCurrentUser().id); updateNotificationBadge();">Mark All Notifications Read</button>
                 </div>
             </div>
@@ -165,23 +264,26 @@ function loadOrganizerDashboard(user) {
     displayOrganizerAnalytics(user.id);
 
     const eventsGrid = document.getElementById('organizerEventsGrid');
-    const createdEventIds = user.createdEvents || [];
-
-    if (createdEventIds.length === 0) {
+    // Only show events created by this organizer
+    const allEvents = db.getEvents();
+    const createdEvents = allEvents.filter(e => e.organizer === user.id);
+    if (createdEvents.length === 0) {
         showEmptyState(eventsGrid, 'You haven\'t created any events yet', '📅');
-        return;
+    } else {
+        eventsGrid.innerHTML = createdEvents.map(event => createOrganizerEventCard(event)).join('');
     }
 
-    const createdEvents = createdEventIds
-        .map(id => db.getEventById(id))
-        .filter(event => event !== undefined);
-
-    eventsGrid.innerHTML = createdEvents.map(event => createOrganizerEventCard(event)).join('');
-
-    // Attach handlers for view registration buttons (delegated)
-    eventsGrid.querySelectorAll('.view-registrations-btn').forEach(btn => {
-        // handlers already inline via onclick; ensure cursor stops propagation
-    });
+    // Show only news created by this organizer
+    const newsGrid = document.getElementById('organizerNewsGrid');
+    if (newsGrid) {
+        const allNews = db.getNews();
+        const myNews = allNews.filter(n => n.createdBy === user.id);
+        if (myNews.length === 0) {
+            newsGrid.innerHTML = '<p class="no-news">No news published yet.</p>';
+        } else {
+            newsGrid.innerHTML = myNews.map(news => `<div class="news-card"><h3>${news.title}</h3><p>${news.summary}</p></div>`).join('');
+        }
+    }
 }
 
 // Display organizer analytics
@@ -604,6 +706,7 @@ function createEvent() {
         status: document.getElementById('eventStatus').value,
         image: imageUrl,
         registrations: [],
+        waitlist: [],
         maxCapacity: parseInt(document.getElementById('eventCapacity').value),
         tags: tags
     };

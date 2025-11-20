@@ -193,3 +193,28 @@ function getEventImageUrl(eventId, defaultImage = null) {
     return defaultImage || 'https://via.placeholder.com/400x250/FF6B35/FFFFFF?text=Event';
 }
 
+/* News image helpers (separate storage key) */
+function storeNewsImage(newsId, imageData) {
+    if (!imageData) return;
+    const images = JSON.parse(localStorage.getItem('news_images') || '{}');
+    images[newsId] = imageData;
+    localStorage.setItem('news_images', JSON.stringify(images));
+}
+
+function getNewsImage(newsId) {
+    const images = JSON.parse(localStorage.getItem('news_images') || '{}');
+    return images[newsId] || null;
+}
+
+function deleteNewsImage(newsId) {
+    const images = JSON.parse(localStorage.getItem('news_images') || '{}');
+    delete images[newsId];
+    localStorage.setItem('news_images', JSON.stringify(images));
+}
+
+function getNewsImageUrl(newsId, defaultImage = null) {
+    const uploaded = getNewsImage(newsId);
+    if (uploaded) return uploaded;
+    return defaultImage || 'https://via.placeholder.com/400x250/9B7EBD/FFFFFF?text=News';
+}
+

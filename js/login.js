@@ -8,7 +8,8 @@ let selectedRole = 'student';
 document.addEventListener('DOMContentLoaded', () => {
     // Check if already logged in
     if (auth.isLoggedIn()) {
-        navigateToHome();
+        // If already logged in, go to dashboard
+        navigateToDashboard();
         return;
     }
 
@@ -60,11 +61,11 @@ function setupLoginForm() {
                 return;
             }
             
-            // Success - redirect to home page
-            showToast('Login successful! Redirecting...', 'success');
+            // Success - redirect to dashboard
+            showToast('Login successful! Redirecting to dashboard...', 'success');
             setTimeout(() => {
-                navigateToHome();
-            }, 1000);
+                navigateToDashboard();
+            }, 800);
         } else {
             // Show error
             errorMessage.textContent = result.message;
