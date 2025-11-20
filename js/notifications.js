@@ -3,11 +3,18 @@
  * Handles notification UI and interactions
  */
 
-// Initialize notifications on page load
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize notifications on page load (safe for scripts loaded after DOMContentLoaded)
+function initNotificationsIfReady() {
     initializeNotifications();
     setupNotificationListeners();
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNotificationsIfReady);
+} else {
+    // DOM already ready — initialize immediately
+    initNotificationsIfReady();
+}
 
 // Initialize notifications UI
 function initializeNotifications() {
@@ -35,7 +42,9 @@ function setupNotificationListeners() {
     if (notificationBell) {
         notificationBell.addEventListener('click', (e) => {
             e.stopPropagation();
-            notificationDropdown.classList.toggle('active');
+            if (notificationDropdown) {
+                notificationDropdown.classList.toggle('active');
+            }
         });
     }
     

@@ -97,6 +97,7 @@ const auth = new Auth();
 // Update navigation based on auth status
 function updateNavigation() {
     const authButton = document.getElementById('authButton');
+    const logoutButton = document.getElementById('logoutButton');
     if (!authButton) return;
     
     if (auth.isLoggedIn()) {
@@ -104,11 +105,44 @@ function updateNavigation() {
         authButton.href = 'pages/dashboard.html';
         authButton.classList.remove('login-btn');
         authButton.classList.add('dashboard-btn');
+        if (logoutButton) {
+            logoutButton.style.display = 'inline-block';
+            logoutButton.addEventListener('click', () => {
+                auth.logout();
+                try { if (typeof showToast === 'function') showToast('Logged out', 'info'); } catch(e) {}
+                // navigate to home using path utils if available
+                try { navigateToHome(); } catch(e) { window.location.href = '../index.html'; }
+            });
+        }
     } else {
         authButton.textContent = 'Login';
         authButton.href = 'pages/login.html';
         authButton.classList.add('login-btn');
         authButton.classList.remove('dashboard-btn');
+        if (logoutButton) {
+            logoutButton.style.display = 'none';
+            logoutButton.removeEventListener && logoutButton.removeEventListener('click', () => {});
+        }
+    }
+
+    // If organizer, load organizer stylesheet
+    try {
+        const user = auth.getCurrentUser();
+        if (user && user.role === 'organizer') {
+            // Avoid duplicating link
+            if (!document.getElementById('organizerCss')) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = (window.location.pathname.includes('/pages/') ? '../css/organizer.css' : 'css/organizer.css');
+                link.id = 'organizerCss';
+                document.head.appendChild(link);
+            }
+        } else {
+            const existing = document.getElementById('organizerCss');
+            if (existing) existing.parentNode.removeChild(existing);
+        }
+    } catch (e) {
+        console.error('Error loading organizer stylesheet', e);
     }
 }
 

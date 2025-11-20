@@ -83,15 +83,22 @@
     border-radius: var(--radius-lg);
     padding: 1px;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+    /* Use a simple gradient border fallback for broader compatibility. */
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 0;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .link-card:hover::before {
     opacity: 1;
+}
+
+/* Ensure link-card content sits above the decorative border */
+.link-card > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* Card glow effect on hover */

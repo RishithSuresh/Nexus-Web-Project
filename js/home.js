@@ -20,11 +20,19 @@ window.addEventListener('load', () => {
 function updateDashboardLink() {
     const dashboardLink = document.getElementById('dashboardLink');
     const dashboardNavLink = document.getElementById('dashboardNavLink');
+    const authButton = document.getElementById('authButton');
 
     if (auth.isLoggedIn()) {
         // Show dashboard link if logged in
         if (dashboardLink) dashboardLink.style.display = 'block';
-        if (dashboardNavLink) dashboardNavLink.style.display = 'block';
+        // If authButton exists (it will become the Dashboard link), avoid duplicate nav items
+        if (dashboardNavLink) {
+            if (authButton) {
+                dashboardNavLink.style.display = 'none';
+            } else {
+                dashboardNavLink.style.display = 'block';
+            }
+        }
     } else {
         // Hide dashboard link if not logged in
         if (dashboardLink) dashboardLink.style.display = 'none';

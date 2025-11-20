@@ -128,7 +128,38 @@ function loadStudentDashboard(user) {
 
 // Load organizer dashboard
 function loadOrganizerDashboard(user) {
-    document.getElementById('organizerDashboard').style.display = 'block';
+    const organizerRoot = document.getElementById('organizerDashboard');
+    organizerRoot.style.display = 'block';
+
+    // Apply organizer layout wrapper if not present
+    if (!organizerRoot.querySelector('.organizer-layout')) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'organizer-layout';
+
+        const sidebar = document.createElement('div');
+        sidebar.className = 'organizer-sidebar';
+        sidebar.innerHTML = `
+            <div class="section-card">
+                <h3>Quick Actions</h3>
+                <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+                    <button class="btn btn-primary" onclick="showCreateEventForm()">+ Create Event</button>
+                    <button class="btn btn-outline" onclick="features.markAllAsRead && features.markAllAsRead(auth.getCurrentUser().id); updateNotificationBadge();">Mark All Notifications Read</button>
+                </div>
+            </div>
+        `;
+
+        const main = document.createElement('div');
+        main.className = 'organizer-main';
+
+        // Move existing organizer content into main
+        while (organizerRoot.firstChild) {
+            main.appendChild(organizerRoot.firstChild);
+        }
+
+        wrapper.appendChild(sidebar);
+        wrapper.appendChild(main);
+        organizerRoot.appendChild(wrapper);
+    }
 
     // Display analytics
     displayOrganizerAnalytics(user.id);
@@ -146,6 +177,11 @@ function loadOrganizerDashboard(user) {
         .filter(event => event !== undefined);
 
     eventsGrid.innerHTML = createdEvents.map(event => createOrganizerEventCard(event)).join('');
+
+    // Attach handlers for view registration buttons (delegated)
+    eventsGrid.querySelectorAll('.view-registrations-btn').forEach(btn => {
+        // handlers already inline via onclick; ensure cursor stops propagation
+    });
 }
 
 // Display organizer analytics
@@ -407,13 +443,14 @@ function viewEventRegistrations(eventId) {
     if (registrations.length === 0) {
         content += '<p>No registrations yet.</p>';
     } else {
-        content += '<table class="registrations-table"><thead><tr><th>Name</th><th>Email</th><th>Department</th></tr></thead><tbody>';
+        content += '<table class="registrations-table"><thead><tr><th>Name</th><th>Email</th><th>Department</th><th></th></tr></thead><tbody>';
         registrations.forEach(profile => {
             content += `
                 <tr>
                     <td>${profile.name}</td>
                     <td>${profile.email}</td>
                     <td>${profile.department || 'N/A'}</td>
+                    <td><button class="event-action-btn remove-btn" onclick="removeAttendee('${eventId}','${profile.email}');">Remove</button></td>
                 </tr>
             `;
         });
@@ -890,5 +927,30 @@ function deleteEvent(eventId) {
 
     showToast('Event deleted successfully', 'info');
     loadDashboard(); // Reload dashboard
+}
+
+// Remove attendee by email (used by organizer)
+function removeAttendee(eventId, attendeeEmail) {
+    const event = db.getEventById(eventId);
+    if (!event) return showToast('Event not found', 'error');
+
+    // find user by email
+    const users = db.getUsers();
+    const user = users.find(u => u.profile && u.profile.email === attendeeEmail);
+    if (!user) return showToast('Attendee not found', 'error');
+
+    // Remove from event registrations
+    event.registrations = event.registrations.filter(id => id !== user.id);
+    db.updateEvent(eventId, event);
+
+    // Remove from user's registered events
+    if (user.registeredEvents) {
+        user.registeredEvents = user.registeredEvents.filter(id => id !== eventId);
+        db.updateUser(user.id, user);
+    }
+
+    showToast('Attendee removed', 'info');
+    // refresh modal content if open
+    loadDashboard();
 }
 
