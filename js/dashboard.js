@@ -650,8 +650,8 @@ function showCreateEventForm() {
     const modalFooter = document.querySelector('.modal-footer');
     if (modalFooter) {
         modalFooter.innerHTML = `
-            <button class="btn btn-primary" onclick="createEvent()">Create Event</button>
-            <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="createEvent(event); return false;">Create Event</button>
+            <button class="btn btn-outline" onclick="closeModal(); return false;">Cancel</button>
         `;
     }
 
@@ -665,7 +665,8 @@ function showCreateEventForm() {
 }
 
 // Create event
-function createEvent() {
+function createEvent(e) {
+    if (e) e.preventDefault();
     const form = document.getElementById('createEventForm');
     if (!form.checkValidity()) {
         form.reportValidity();
