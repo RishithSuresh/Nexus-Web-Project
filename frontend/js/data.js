@@ -11,16 +11,162 @@
    =================================== */
 
 // Sample Events Data
-// Removed demo events — initialize with an empty array per user request
-const SAMPLE_EVENTS = [];
+const SAMPLE_EVENTS = [
+    {
+        id: 'evt100',
+        title: 'Tech Innovation Summit 2025',
+        description: 'Talks and workshops about AI, ML and cloud. Industry speakers and student showcases.',
+        date: '2025-11-30',
+        time: '09:00 AM',
+        location: 'Main Auditorium',
+        category: 'Technology',
+        organizer: 'org001',
+        organizerName: 'Dr. Sarah Johnson',
+        status: 'upcoming',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Tech Innovation Summit', '64B5F6', 'FFFFFF', 720, 400) : '',
+        registrations: [],
+        waitlist: [],
+        maxCapacity: 300,
+        tags: ['Tech','Innovation']
+    },
+    {
+        id: 'evt101',
+        title: 'Annual Cultural Fest',
+        description: 'Three days of music, dance, drama and art across campus.',
+        date: '2025-12-05',
+        time: '05:00 PM',
+        location: 'Campus Grounds',
+        category: 'Cultural',
+        organizer: 'org002',
+        organizerName: 'Prof. Michael Chen',
+        status: 'upcoming',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Cultural Fest', '9B7EBD', 'FFFFFF', 720, 400) : '',
+        registrations: [],
+        waitlist: [],
+        maxCapacity: 1000,
+        tags: ['Culture','Festival']
+    },
+    {
+        id: 'evt102',
+        title: 'Startup Pitch Night',
+        description: 'Students pitch ideas to mentors and investors. Prizes and mentorship opportunities.',
+        date: '2025-12-10',
+        time: '06:00 PM',
+        location: 'Innovation Hub',
+        category: 'Business',
+        organizer: 'admin001',
+        organizerName: 'Campus Admin',
+        status: 'upcoming',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Startup Pitch', 'F4A6A3', 'FFFFFF', 720, 400) : '',
+        registrations: [],
+        waitlist: [],
+        maxCapacity: 200,
+        tags: ['Startup','Pitch']
+    },
+    {
+        id: 'evt103',
+        title: 'Environmental Workshop',
+        description: 'Hands-on sessions about sustainability and green practices.',
+        date: '2025-12-15',
+        time: '10:00 AM',
+        location: 'Botanical Garden',
+        category: 'Environment',
+        organizer: 'org002',
+        organizerName: 'Prof. Michael Chen',
+        status: 'upcoming',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Environment Workshop', '81C784', 'FFFFFF', 720, 400) : '',
+        registrations: [],
+        waitlist: [],
+        maxCapacity: 150,
+        tags: ['Environment','Workshop']
+    },
+    {
+        id: 'evt104',
+        title: 'Career Fair 2025',
+        description: 'Meet recruiters, attend CV clinics and interview workshops.',
+        date: '2025-12-20',
+        time: '11:00 AM',
+        location: 'Convention Center',
+        category: 'Career',
+        organizer: 'org001',
+        organizerName: 'Dr. Sarah Johnson',
+        status: 'upcoming',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Career Fair', 'FFB74D', '000000', 720, 400) : '',
+        registrations: [],
+        waitlist: [],
+        maxCapacity: 500,
+        tags: ['Career','Jobs']
+    }
+];
 
 // Sample News Data
-// Removed demo news items — initialize with an empty array per user request
-const SAMPLE_NEWS = [];
+const SAMPLE_NEWS = [
+    {
+        id: 'news100',
+        title: 'University Ranked Top 50',
+        summary: 'University recognized for innovation and research excellence.',
+        content: 'The university has been ranked among the top 50 nationally for research and innovation.',
+        date: '2025-11-20',
+        author: 'Dr. Sarah Johnson',
+        category: 'Achievement',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Top 50 Ranking', '6B9BD1', 'FFFFFF', 640, 360) : '',
+        tags: ['Ranking','Achievement']
+    },
+    {
+        id: 'news101',
+        title: 'New AI Lab Launch',
+        summary: 'AI Research Lab inaugurated with industry partners.',
+        content: 'The new AI lab will provide resources and mentorship for students and researchers.',
+        date: '2025-11-18',
+        author: 'Prof. Michael Chen',
+        category: 'Technology',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('AI Lab', '9B7EBD', 'FFFFFF', 640, 360) : '',
+        tags: ['AI','Research']
+    }
+];
 
 // Sample Clubs Data
-// Removed demo clubs — initialize with an empty array per user request
-const SAMPLE_CLUBS = [];
+const SAMPLE_CLUBS = [
+    {
+        id: 'club001',
+        name: 'Coding Club',
+        description: 'Learn programming, participate in hackathons, and build projects.',
+        category: 'Technology',
+        contact: { email: 'coding@campusconnect.edu', phone: '(555) 100-0001', president: 'Dr. Sarah Johnson' },
+        members: 120,
+        meetingTime: 'Fridays, 4:00 PM',
+        location: 'Computer Lab',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Coding Club', '6B9BD1', 'FFFFFF', 300, 200) : '',
+        organizedEvents: ['evt100', 'evt102'],
+        memberIds: ['stu001']
+    },
+    {
+        id: 'club002',
+        name: 'Drama Society',
+        description: 'Theater productions, workshops and performances.',
+        category: 'Arts',
+        contact: { email: 'drama@campusconnect.edu', phone: '(555) 100-0002', president: 'Prof. Michael Chen' },
+        members: 80,
+        meetingTime: 'Tuesdays, 5:30 PM',
+        location: 'Theater Hall',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Drama Society', '9B7EBD', 'FFFFFF', 300, 200) : '',
+        organizedEvents: ['evt101'],
+        memberIds: []
+    },
+    {
+        id: 'club003',
+        name: 'Entrepreneurship Cell',
+        description: 'Support for student startups, networking and mentorship.',
+        category: 'Business',
+        contact: { email: 'ecell@campusconnect.edu', phone: '(555) 100-0003', president: 'Campus Admin' },
+        members: 95,
+        meetingTime: 'Wednesdays, 6:00 PM',
+        location: 'Innovation Hub',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('E-Cell', 'F4A6A3', 'FFFFFF', 300, 200) : '',
+        organizedEvents: ['evt102'],
+        memberIds: ['stu002']
+    }
+];
 
 // Sample Users Data
 const SAMPLE_USERS = [
