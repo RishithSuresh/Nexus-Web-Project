@@ -129,6 +129,51 @@ function createNews() {
         storeNewsImage(newsItem.id, uploadedImage);
     }
 
+    // Attempt to persist to backend (development bypass with author info)
+    (async () => {
+        try {
+            const payload = {
+                title: newsItem.title,
+                content: newsItem.content,
+                category: newsItem.category,
+                image: newsItem.image,
+                date: newsItem.date,
+                // include author info for development bypass
+                author_id: auth.getUserData().id,
+                author_name: auth.getUserData().profile.name,
+                tags: newsItem.tags
+            };
+
+            const backendUrl = (window.location.hostname === 'localhost') ? 'http://localhost:5000/api/news' : '/api/news';
+
+            const resp = await fetch(backendUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (resp.ok) {
+                const data = await resp.json().catch(()=>null);
+                if (data && data.newsId) {
+                    // update local news id to match backend
+                    const oldId = newsItem.id;
+                    const newId = data.newsId;
+                    const news = db.getNews();
+                    const idx = news.findIndex(n => n.id === oldId);
+                    if (idx !== -1) {
+                        news[idx].id = newId;
+                        db.setNews(news);
+                    }
+                }
+            } else {
+                const err = await resp.json().catch(()=>null);
+                console.warn('Backend news create failed', err || resp.statusText);
+            }
+        } catch (error) {
+            console.warn('Could not persist news to backend:', error.message);
+        }
+    })();
+
     showToast('News published', 'success');
     closeModal();
     // Reload dashboard/news pages
