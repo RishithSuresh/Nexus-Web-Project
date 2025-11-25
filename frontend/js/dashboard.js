@@ -118,7 +118,7 @@ function createNews() {
         date: dateVal,
         author: user.profile.name,
         category,
-        image: uploadedImage || `https://via.placeholder.com/400x250/9B7EBD/FFFFFF?text=${encodeURIComponent(title)}`,
+        image: (uploadedImage) ? uploadedImage : (typeof generatePlaceholderDataUrl === 'function' ? generatePlaceholderDataUrl(title || 'News', '9B7EBD') : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#9B7EBD"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">' + encodeURIComponent(title || 'News') + '</text></svg>')),
         tags
     };
 
@@ -649,10 +649,31 @@ function showCreateEventForm() {
 
     const modalFooter = document.querySelector('.modal-footer');
     if (modalFooter) {
-        modalFooter.innerHTML = `
-            <button class="btn btn-primary" onclick="createEvent(event); return false;">Create Event</button>
-            <button class="btn btn-outline" onclick="closeModal(); return false;">Cancel</button>
-        `;
+        // Create buttons programmatically to avoid conflicts with global names
+        modalFooter.innerHTML = '';
+
+        const createBtn = document.createElement('button');
+        createBtn.className = 'btn btn-primary';
+        createBtn.type = 'button';
+        createBtn.textContent = 'Create Event';
+        createBtn.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            createEvent();
+            return false;
+        });
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'btn btn-outline';
+        cancelBtn.type = 'button';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            closeModal();
+            return false;
+        });
+
+        modalFooter.appendChild(createBtn);
+        modalFooter.appendChild(cancelBtn);
     }
 
     // Setup image upload handler with a small delay to ensure DOM is ready
@@ -665,8 +686,7 @@ function showCreateEventForm() {
 }
 
 // Create event
-function createEvent(e) {
-    if (e) e.preventDefault();
+async function createEvent() {
     const form = document.getElementById('createEventForm');
     if (!form.checkValidity()) {
         form.reportValidity();
@@ -690,8 +710,13 @@ function createEvent(e) {
     if (uploadedImage) {
         imageUrl = uploadedImage;
     } else {
-        imageUrl = document.getElementById('eventImage').value ||
-                   `https://via.placeholder.com/400x250/${Math.random() > 0.5 ? 'FF6B35' : '00A8E8'}/FFFFFF?text=${encodeURIComponent(document.getElementById('eventTitle').value)}`;
+        const title = document.getElementById('eventTitle').value || 'Event';
+        const color = Math.random() > 0.5 ? 'FF6B35' : '00A8E8';
+        try {
+            imageUrl = document.getElementById('eventImage').value || generatePlaceholderDataUrl(title, color);
+        } catch (e) {
+            imageUrl = document.getElementById('eventImage').value || 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#${color}"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">${encodeURIComponent(title)}</text></svg>`);
+        }
     }
 
     const newEvent = {
@@ -712,7 +737,73 @@ function createEvent(e) {
         tags: tags
     };
 
+    // Add to local DB first
     db.addEvent(newEvent);
+
+    // Attempt to persist to backend if available.
+    // Backend accepts unauthenticated create in development when organizer info is provided in body.
+    try {
+        const payload = {
+            title: newEvent.title,
+            description: newEvent.description,
+            date: newEvent.date,
+            // send time as HH:MM:SS for SQL TIME compatibility
+            time: (document.getElementById('eventTime').value || '00:00') + ':00',
+            location: newEvent.location,
+            category: newEvent.category,
+            max_capacity: newEvent.maxCapacity,
+            tags: newEvent.tags,
+            image: newEvent.image,
+            // include organizer info for development bypass
+            organizer_id: newEvent.organizer,
+            organizer_name: newEvent.organizerName
+        };
+
+        // Use relative path; frontend server proxies are not set, so call backend host directly
+        const backendUrl = (window.location.hostname === 'localhost') ? 'http://localhost:5000/api/events' : '/api/events';
+
+        const resp = await fetch(backendUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!resp.ok) {
+            const err = await resp.json().catch(()=>null);
+            console.warn('Backend event create failed', err || resp.statusText);
+        } else {
+            // Optionally update local event id to match backend id if backend returned different id
+            const data = await resp.json().catch(()=>null);
+            if (data && data.eventId) {
+                // update local event id mapping and user's createdEvents
+                const oldId = newEvent.id;
+                const newId = data.eventId;
+                const events = db.getEvents();
+                const idx = events.findIndex(e => e.id === oldId);
+                if (idx !== -1) {
+                    events[idx].id = newId;
+                    db.setEvents(events);
+                }
+                // Update user createdEvents list
+                const currentUser = auth.getUserData();
+                if (currentUser && currentUser.createdEvents) {
+                    const ci = currentUser.createdEvents.indexOf(oldId);
+                    if (ci !== -1) {
+                        currentUser.createdEvents[ci] = newId;
+                        db.updateUser(currentUser.id, currentUser);
+                        // also update session profile if needed
+                        if (auth.currentUser) {
+                            auth.currentUser = auth.getCurrentUser();
+                        }
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        console.warn('Could not persist event to backend:', error.message);
+    }
 
     // Store uploaded image if exists
     if (uploadedImage) {

@@ -23,7 +23,7 @@ const SAMPLE_EVENTS = [
         organizer: 'org001',
         organizerName: 'Dr. Sarah Johnson',
         status: 'upcoming',
-        image: 'https://via.placeholder.com/400x250/6B9BD1/FFFFFF?text=Tech+Summit',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Tech Summit', '6B9BD1') : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#6B9BD1"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">Tech Summit</text></svg>'),
         registrations: [],
         waitlist: [],
         maxCapacity: 200,
@@ -40,7 +40,7 @@ const SAMPLE_EVENTS = [
         organizer: 'org002',
         organizerName: 'Prof. Michael Chen',
         status: 'upcoming',
-        image: 'https://via.placeholder.com/400x250/9B7EBD/FFFFFF?text=Cultural+Fest',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Cultural Fest', '9B7EBD') : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#9B7EBD"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">Cultural Fest</text></svg>'),
         registrations: [],
         waitlist: [],
         maxCapacity: 500,
@@ -57,7 +57,7 @@ const SAMPLE_EVENTS = [
         organizer: 'org001',
         organizerName: 'Dr. Sarah Johnson',
         status: 'ongoing',
-        image: 'https://via.placeholder.com/400x250/F4A6A3/FFFFFF?text=Startup+Pitch',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Startup Pitch', 'F4A6A3') : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#F4A6A3"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">Startup Pitch</text></svg>'),
         registrations: ['stu001'],
         waitlist: [],
         maxCapacity: 50,
@@ -74,7 +74,7 @@ const SAMPLE_EVENTS = [
         organizer: 'org002',
         organizerName: 'Prof. Michael Chen',
         status: 'upcoming',
-        image: 'https://via.placeholder.com/400x250/81C784/FFFFFF?text=Environment',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Environment', '81C784') : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#81C784"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">Environment</text></svg>'),
         registrations: [],
         waitlist: [],
         maxCapacity: 100,
@@ -91,7 +91,7 @@ const SAMPLE_EVENTS = [
         organizer: 'org001',
         organizerName: 'Dr. Sarah Johnson',
         status: 'upcoming',
-        image: 'https://via.placeholder.com/400x250/64B5F6/FFFFFF?text=Sports+Finals',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Sports Finals', '64B5F6') : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#64B5F6"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">Sports Finals</text></svg>'),
         registrations: [],
         waitlist: [],
         maxCapacity: 1000,
@@ -108,7 +108,7 @@ const SAMPLE_EVENTS = [
         organizer: 'org002',
         organizerName: 'Prof. Michael Chen',
         status: 'upcoming',
-        image: 'https://via.placeholder.com/400x250/FFB74D/FFFFFF?text=Career+Fair',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Career Fair', 'FFB74D') : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#FFB74D"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">Career Fair</text></svg>'),
         registrations: [],
         waitlist: [],
         maxCapacity: 300,
@@ -126,7 +126,7 @@ const SAMPLE_NEWS = [
         date: '2024-10-25',
         author: 'Campus News Team',
         category: 'Achievement',
-        image: 'https://via.placeholder.com/400x250/6B9BD1/FFFFFF?text=University+Ranking',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('University Ranking', '6B9BD1') : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#6B9BD1"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">University Ranking</text></svg>'),
         tags: ['Achievement', 'Ranking', 'Excellence']
     },
     {
@@ -137,7 +137,7 @@ const SAMPLE_NEWS = [
         date: '2024-10-20',
         author: 'Tech Desk',
         category: 'Technology',
-        image: 'https://via.placeholder.com/400x250/9B7EBD/FFFFFF?text=AI+Lab',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('AI Lab', '9B7EBD') : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#9B7EBD"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">AI Lab</text></svg>'),
         tags: ['Technology', 'Research', 'AI']
     },
     {
@@ -148,7 +148,7 @@ const SAMPLE_NEWS = [
         date: '2024-10-18',
         author: 'Student Affairs',
         category: 'Achievement',
-        image: 'https://via.placeholder.com/400x250/F4A6A3/FFFFFF?text=Hackathon+Win',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Hackathon Win', 'F4A6A3') : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#F4A6A3"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">Hackathon Win</text></svg>'),
         tags: ['Achievement', 'Technology', 'Competition']
     },
     {
@@ -159,7 +159,7 @@ const SAMPLE_NEWS = [
         date: '2024-10-15',
         author: 'Environmental Committee',
         category: 'Environment',
-        image: 'https://via.placeholder.com/400x250/81C784/FFFFFF?text=Sustainability',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Sustainability', '81C784') : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#81C784"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">Sustainability</text></svg>'),
         tags: ['Environment', 'Sustainability', 'Initiative']
     }
 ];
@@ -180,7 +180,7 @@ const SAMPLE_CLUBS = [
         members: 150,
         meetingTime: 'Fridays, 4:00 PM',
         location: 'Computer Lab, Building B',
-        image: 'https://via.placeholder.com/300x200/6B9BD1/FFFFFF?text=Coding+Club',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Coding Club', '6B9BD1', 'FFFFFF', 300, 200) : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="100%" height="100%" fill="#6B9BD1"/><text x="50%" y="50%" font-family="Arial" font-size="16" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">Coding Club</text></svg>'),
         organizedEvents: ['evt001', 'evt003'],  // Tech Summit, Startup Pitch
         memberIds: ['stu001']
     },
@@ -198,7 +198,7 @@ const SAMPLE_CLUBS = [
         members: 80,
         meetingTime: 'Tuesdays & Thursdays, 5:30 PM',
         location: 'Theater Hall',
-        image: 'https://via.placeholder.com/300x200/9B7EBD/FFFFFF?text=Drama+Society',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Drama Society', '9B7EBD', 'FFFFFF', 300, 200) : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="100%" height="100%" fill="#9B7EBD"/><text x="50%" y="50%" font-family="Arial" font-size="16" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">Drama Society</text></svg>'),
         organizedEvents: ['evt002'],  // Annual Cultural Fest
         memberIds: []
     },
@@ -216,7 +216,7 @@ const SAMPLE_CLUBS = [
         members: 120,
         meetingTime: 'Wednesdays, 6:00 PM',
         location: 'Innovation Hub',
-        image: 'https://via.placeholder.com/300x200/F4A6A3/FFFFFF?text=E-Cell',
+        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('E-Cell', 'F4A6A3', 'FFFFFF', 300, 200) : 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="100%" height="100%" fill="#F4A6A3"/><text x="50%" y="50%" font-family="Arial" font-size="16" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">E-Cell</text></svg>'),
         organizedEvents: ['evt003', 'evt004'],  // Startup Pitch, Environmental Workshop
         memberIds: []
     }

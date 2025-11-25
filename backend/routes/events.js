@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/database');
+const jwt = require('jsonwebtoken');
 const { verifyToken, isOrganizer } = require('../middleware/auth');
 
 // Get all events
@@ -87,16 +88,36 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Create event (organizer only)
-router.post('/', verifyToken, isOrganizer, async (req, res) => {
+// Create event (organizer only). In development, allows unauthenticated create when organizer info is provided in body.
+router.post('/', async (req, res) => {
     try {
-        const { title, description, date, time, location, category, max_capacity, tags, image } = req.body;
+        const { title, description, date, time, location, category, max_capacity, tags, image, organizer_id, organizer_name } = req.body;
 
         if (!title || !description || !date || !time || !location) {
             return res.status(400).json({
                 success: false,
                 message: 'Missing required fields'
             });
+        }
+
+        // Determine user (from token or development bypass)
+        let user = null;
+        const authHeader = req.headers.authorization;
+        if (authHeader && authHeader.split(' ')[1]) {
+            try {
+                const decoded = jwt.verify(authHeader.split(' ')[1], process.env.JWT_SECRET);
+                user = decoded;
+                if (user.role !== 'organizer') {
+                    return res.status(403).json({ success: false, message: 'Only organizers can perform this action' });
+                }
+            } catch (err) {
+                return res.status(401).json({ success: false, message: 'Invalid or expired token' });
+            }
+        } else if (process.env.NODE_ENV === 'development' && organizer_id && organizer_name) {
+            // Development bypass: accept organizer info from body
+            user = { id: organizer_id, name: organizer_name, role: 'organizer' };
+        } else {
+            return res.status(401).json({ success: false, message: 'No token provided' });
         }
 
         const connection = await pool.getConnection();
@@ -106,7 +127,7 @@ router.post('/', verifyToken, isOrganizer, async (req, res) => {
         // Insert event
         await connection.query(
             'INSERT INTO events (id, title, description, date, time, location, category, organizer_id, organizer_name, max_capacity, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [eventId, title, description, date, time, location, category || null, req.user.id, req.user.name, max_capacity || 100, image || null]
+            [eventId, title, description, date, time, location, category || null, user.id, user.name, max_capacity || 100, image || null]
         );
 
         // Insert tags

@@ -190,7 +190,11 @@ function getEventImageUrl(eventId, defaultImage = null) {
     if (uploadedImage) {
         return uploadedImage;
     }
-    return defaultImage || 'https://via.placeholder.com/400x250/FF6B35/FFFFFF?text=Event';
+    try {
+        return defaultImage || generatePlaceholderDataUrl('Event', 'FF6B35');
+    } catch (e) {
+        return defaultImage || 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#FF6B35"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">Event</text></svg>');
+    }
 }
 
 /* News image helpers (separate storage key) */
@@ -215,6 +219,10 @@ function deleteNewsImage(newsId) {
 function getNewsImageUrl(newsId, defaultImage = null) {
     const uploaded = getNewsImage(newsId);
     if (uploaded) return uploaded;
-    return defaultImage || 'https://via.placeholder.com/400x250/9B7EBD/FFFFFF?text=News';
+    try {
+        return defaultImage || generatePlaceholderDataUrl('News', '9B7EBD');
+    } catch (e) {
+        return defaultImage || 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="100%" height="100%" fill="#9B7EBD"/><text x="50%" y="50%" font-family="Arial" font-size="20" fill="#FFFFFF" dominant-baseline="middle" text-anchor="middle">News</text></svg>');
+    }
 }
 
