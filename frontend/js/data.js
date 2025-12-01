@@ -221,6 +221,24 @@ const SAMPLE_USERS = [
         createdEvents: ['evt002', 'evt004', 'evt006'],
         createdAt: '2024-01-10'
     }
+    ,
+    {
+        id: 'teacher001',
+        username: 'teacher',
+        password: 'teacher123',
+        role: 'organizer',
+        profile: {
+            name: 'Dr. Laura Smith',
+            email: 'laura.smith@campusconnect.edu',
+            phone: '(555) 222-3333',
+            department: 'Mathematics',
+            position: 'Lecturer',
+            bio: 'Teaching and curriculum development',
+            profilePic: ''
+        },
+        createdEvents: [],
+        createdAt: '2024-02-01'
+    }
 ];
 
 // Database Class - Manages all localStorage operations

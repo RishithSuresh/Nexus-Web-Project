@@ -53,12 +53,29 @@ function setupLoginForm() {
         const result = auth.login(username, password);
         
         if (result.success) {
-            // Check if role matches
-            if (result.user.role !== selectedRole) {
-                errorMessage.textContent = `This account is registered as ${result.user.role}, not ${selectedRole}. Please select the correct role.`;
-                errorMessage.style.display = 'block';
-                auth.logout(); // Logout the user
-                return;
+                // Treat `teacher` selection as an organizer account internally
+                const expectedRole = selectedRole === 'teacher' ? 'organizer' : selectedRole;
+                if (result.user.role !== expectedRole) {
+                    errorMessage.textContent = `This account is registered as ${result.user.role}, not ${selectedRole}. Please select the correct role.`;
+                    errorMessage.style.display = 'block';
+                    auth.logout(); // Logout the user
+                    return;
+                }
+
+            // If user selected Teacher, mark the session to behave like a student
+            if (selectedRole === 'teacher') {
+                // Overwrite session role to `student` so UI treats teacher like a student
+                try {
+                    const session = auth.getCurrentUser ? auth.getCurrentUser() : auth.currentUser;
+                    if (session) {
+                        session.role = 'student';
+                        session.isTeacherSession = true;
+                        localStorage.setItem('currentUser', JSON.stringify(session));
+                        auth.currentUser = session;
+                    }
+                } catch (e) {
+                    console.warn('Could not adjust teacher session:', e);
+                }
             }
             
             // Success - redirect to dashboard

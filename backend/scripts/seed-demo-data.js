@@ -14,7 +14,7 @@ async function seed() {
 
     // Clean up any existing demo rows for the same IDs to make seeding idempotent
     console.log('- Removing conflicting demo rows if present...');
-    const userIds = ['stu001','stu002','org001','org002','admin001'];
+    const userIds = ['stu001','stu002','org001','org002','admin001','teacher001'];
     const clubIds = ['club001','club002','club003'];
     const eventIds = ['evt100','evt101','evt102'];
     const newsIds = ['news100','news101'];
@@ -47,7 +47,8 @@ async function seed() {
       { id: 'stu002', username: 'student2', password: 'student123', role: 'student', name: 'Bob Student', email: 'bob@student.edu' },
       { id: 'org001', username: 'organizer1', password: 'organizer123', role: 'organizer', name: 'Dr. Sarah Johnson', email: 'sarah.johnson@campusconnect.edu' },
       { id: 'org002', username: 'organizer2', password: 'organizer123', role: 'organizer', name: 'Prof. Michael Chen', email: 'michael.chen@campusconnect.edu' },
-      { id: 'admin001', username: 'admin', password: 'admin123', role: 'organizer', name: 'Campus Admin', email: 'admin@campusconnect.edu' }
+      { id: 'admin001', username: 'admin', password: 'admin123', role: 'organizer', name: 'Campus Admin', email: 'admin@campusconnect.edu' },
+      { id: 'teacher001', username: 'teacher', password: 'teacher123', role: 'organizer', name: 'Dr. Laura Smith', email: 'laura.smith@campusconnect.edu' }
     ];
 
     for (const u of users) {

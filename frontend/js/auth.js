@@ -64,7 +64,23 @@ class Auth {
     // Get user's full data from database
     getUserData() {
         if (!this.currentUser) return null;
-        return db.getUserById(this.currentUser.id);
+        const dbUser = db.getUserById(this.currentUser.id);
+        if (!dbUser) return null;
+
+        // If this session was marked as a teacher session that should behave like a student,
+        // return a cloned user object with the role overridden to 'student' so UI renders student view.
+        try {
+            if (this.currentUser.isTeacherSession === true) {
+                const clone = JSON.parse(JSON.stringify(dbUser));
+                clone.role = 'student';
+                return clone;
+            }
+        } catch (e) {
+            // fall back to dbUser if cloning fails
+            console.warn('Could not clone user for teacher session:', e);
+        }
+
+        return dbUser;
     }
 
     // Update user profile
