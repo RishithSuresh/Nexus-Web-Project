@@ -23,7 +23,7 @@ const SAMPLE_EVENTS = [
         organizer: 'org001',
         organizerName: 'Dr. Sarah Johnson',
         status: 'upcoming',
-        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Tech Innovation Summit', '64B5F6', 'FFFFFF', 720, 400) : '',
+        image: '/assets/images/events/tech-innovation.svg',
         registrations: [],
         waitlist: [],
         maxCapacity: 300,
@@ -40,7 +40,7 @@ const SAMPLE_EVENTS = [
         organizer: 'org002',
         organizerName: 'Prof. Michael Chen',
         status: 'upcoming',
-        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Cultural Fest', '9B7EBD', 'FFFFFF', 720, 400) : '',
+        image: '/assets/images/events/cultural-fest.svg',
         registrations: [],
         waitlist: [],
         maxCapacity: 1000,
@@ -57,7 +57,7 @@ const SAMPLE_EVENTS = [
         organizer: 'admin001',
         organizerName: 'Campus Admin',
         status: 'upcoming',
-        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Startup Pitch', 'F4A6A3', 'FFFFFF', 720, 400) : '',
+        image: '/assets/images/events/startup-pitch.svg',
         registrations: [],
         waitlist: [],
         maxCapacity: 200,
@@ -74,7 +74,7 @@ const SAMPLE_EVENTS = [
         organizer: 'org002',
         organizerName: 'Prof. Michael Chen',
         status: 'upcoming',
-        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Environment Workshop', '81C784', 'FFFFFF', 720, 400) : '',
+        image: '/assets/images/events/environment-workshop.svg',
         registrations: [],
         waitlist: [],
         maxCapacity: 150,
@@ -91,7 +91,7 @@ const SAMPLE_EVENTS = [
         organizer: 'org001',
         organizerName: 'Dr. Sarah Johnson',
         status: 'upcoming',
-        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Career Fair', 'FFB74D', '000000', 720, 400) : '',
+        image: '/assets/images/events/career-fair.svg',
         registrations: [],
         waitlist: [],
         maxCapacity: 500,
@@ -109,7 +109,7 @@ const SAMPLE_NEWS = [
         date: '2025-11-20',
         author: 'Dr. Sarah Johnson',
         category: 'Achievement',
-        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Top 50 Ranking', '6B9BD1', 'FFFFFF', 640, 360) : '',
+        image: '/assets/images/news/top-50-ranking.svg',
         tags: ['Ranking','Achievement']
     },
     {
@@ -120,7 +120,7 @@ const SAMPLE_NEWS = [
         date: '2025-11-18',
         author: 'Prof. Michael Chen',
         category: 'Technology',
-        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('AI Lab', '9B7EBD', 'FFFFFF', 640, 360) : '',
+        image: '/assets/images/news/ai-lab.svg',
         tags: ['AI','Research']
     }
 ];
@@ -136,7 +136,7 @@ const SAMPLE_CLUBS = [
         members: 120,
         meetingTime: 'Fridays, 4:00 PM',
         location: 'Computer Lab',
-        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Coding Club', '6B9BD1', 'FFFFFF', 300, 200) : '',
+        image: '/assets/images/clubs/coding-club.svg',
         organizedEvents: ['evt100', 'evt102'],
         memberIds: ['stu001']
     },
@@ -149,7 +149,7 @@ const SAMPLE_CLUBS = [
         members: 80,
         meetingTime: 'Tuesdays, 5:30 PM',
         location: 'Theater Hall',
-        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('Drama Society', '9B7EBD', 'FFFFFF', 300, 200) : '',
+        image: '/assets/images/clubs/drama-society.svg',
         organizedEvents: ['evt101'],
         memberIds: []
     },
@@ -162,7 +162,7 @@ const SAMPLE_CLUBS = [
         members: 95,
         meetingTime: 'Wednesdays, 6:00 PM',
         location: 'Innovation Hub',
-        image: (typeof generatePlaceholderDataUrl === 'function') ? generatePlaceholderDataUrl('E-Cell', 'F4A6A3', 'FFFFFF', 300, 200) : '',
+        image: '/assets/images/clubs/ecell.svg',
         organizedEvents: ['evt102'],
         memberIds: ['stu002']
     }
@@ -256,6 +256,26 @@ class Database {
             this.setUsers(SAMPLE_USERS);
             localStorage.setItem('campusconnect_initialized', 'true');
             console.log('✅ Database initialized with sample data');
+        } else {
+            // If the demo was initialized earlier, ensure any new sample users
+            // (e.g. added in a later version) are merged into the existing users
+            // without overwriting the user's data.
+            try {
+                const existingUsers = this.getUsers() || [];
+                let added = false;
+                SAMPLE_USERS.forEach(sample => {
+                    if (!existingUsers.some(u => u.username === sample.username)) {
+                        existingUsers.push(sample);
+                        added = true;
+                    }
+                });
+                if (added) {
+                    this.setUsers(existingUsers);
+                    console.log('🔁 Merged missing sample users into existing database');
+                }
+            } catch (e) {
+                console.warn('Could not merge sample users:', e);
+            }
         }
     }
 
